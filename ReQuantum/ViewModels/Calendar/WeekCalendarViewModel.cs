@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReQuantum.Attributes;
 using ReQuantum.Controls;
+using ReQuantum.Services;
 using ReQuantum.Views;
 using System;
 using System.Collections.Generic;
@@ -12,8 +14,11 @@ namespace ReQuantum.ViewModels;
 /// <summary>
 /// 周视图日历ViewModel
 /// </summary>
+[AutoInject(Lifetime.Transient, RegisterTypes = [typeof(WeekCalendarViewModel)])]
 public partial class WeekCalendarViewModel : ViewModelBase<WeekCalendarView>
 {
+    private readonly ICalendarService _calendarService;
+
     [ObservableProperty]
     private DateOnly _weekStartDate = DateOnly.FromDateTime(DateTime.Now);
 
@@ -27,8 +32,9 @@ public partial class WeekCalendarViewModel : ViewModelBase<WeekCalendarView>
 
     private WeekDay? _previousSelectedDay;
 
-    public WeekCalendarViewModel()
+    public WeekCalendarViewModel(ICalendarService calendarService)
     {
+        _calendarService = calendarService;
         UpdateWeek();
     }
 
@@ -44,7 +50,23 @@ public partial class WeekCalendarViewModel : ViewModelBase<WeekCalendarView>
 
     private void UpdateWeek()
     {
-        var days = GenerateWeekDays(WeekStartDate);
+        // 从 Service 获取纯数据
+        var weekData = _calendarService.GetWeekCalendarData(WeekStartDate);
+        
+        // 在 ViewModel 中转换为 UI 模型
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        
+        var days = weekData.Select(dayData => new WeekDay
+        {
+            Date = dayData.Date,
+            Day = dayData.Date.Day,
+            DayOfWeek = dayData.Date.DayOfWeek.ToString()[..3],
+            IsToday = dayData.Date == today,
+            IsSelected = dayData.Date == SelectedDate,
+            TimelineItems = CalendarItemsHelper.GenerateWeekViewItems(dayData.Todos.ToList(), dayData.Events.ToList()),
+            ViewModel = this
+        }).ToList();
+        
         WeekDays = new ObservableCollection<WeekDay>(days);
         _previousSelectedDay = WeekDays.FirstOrDefault(d => d.IsSelected);
     }
@@ -68,21 +90,11 @@ public partial class WeekCalendarViewModel : ViewModelBase<WeekCalendarView>
     }
 
     /// <summary>
-    /// 批量更新所有日期的时间线事项
+    /// 刷新日历数据（重新从 Service 获取）
     /// </summary>
-    public void UpdateAllDayItems(Dictionary<DateOnly, List<WeekTimelineItem>> itemsDict)
+    public void RefreshCalendarData()
     {
-        foreach (var day in WeekDays)
-        {
-            if (itemsDict.TryGetValue(day.Date, out var items))
-            {
-                day.TimelineItems = items;
-            }
-            else
-            {
-                day.TimelineItems = [];
-            }
-        }
+        UpdateWeek();
     }
 
     private void UpdateSelectionState(DateOnly newSelectedDate)
@@ -100,29 +112,6 @@ public partial class WeekCalendarViewModel : ViewModelBase<WeekCalendarView>
             newSelectedDay.IsSelected = true;
             _previousSelectedDay = newSelectedDay;
         }
-    }
-
-    private List<WeekDay> GenerateWeekDays(DateOnly weekStartDate)
-    {
-        var days = new List<WeekDay>();
-        var today = DateOnly.FromDateTime(DateTime.Now);
-        var selectedDate = SelectedDate;
-
-        for (var i = 0; i < 7; i++)
-        {
-            var date = weekStartDate.AddDays(i);
-            days.Add(new WeekDay
-            {
-                Date = date,
-                Day = date.Day,
-                DayOfWeek = date.DayOfWeek.ToString()[..3],
-                IsToday = date == today,
-                IsSelected = date == selectedDate,
-                ViewModel = this
-            });
-        }
-
-        return days;
     }
 }
 

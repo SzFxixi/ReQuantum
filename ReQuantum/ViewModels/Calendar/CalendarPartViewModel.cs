@@ -24,7 +24,7 @@ public enum CalendarViewType
 public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
 {
     private readonly ICalendarService _calendarService;
-    
+
     /// <summary>
     /// 动态年月文本：2025年11月 / 2025/11
     /// </summary>
@@ -62,19 +62,19 @@ public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
     /// </summary>
     public WeekCalendarViewModel WeekCalendarViewModel { get; }
 
-    public CalendarPartViewModel(ICalendarService calendarService)
+    public CalendarPartViewModel(ICalendarService calendarService, MonthCalendarViewModel monthCalendarViewModel, WeekCalendarViewModel weekCalendarViewModel)
     {
         _calendarService = calendarService;
         YearMonthText = new LocalizedText(Localizer);
-        
+
         // 初始化日历ViewModels
-        MonthCalendarViewModel = new MonthCalendarViewModel();
-        WeekCalendarViewModel = new WeekCalendarViewModel();
-        
+        MonthCalendarViewModel = monthCalendarViewModel;
+        WeekCalendarViewModel = weekCalendarViewModel;
+
         // 订阅日期选择事件
         MonthCalendarViewModel.DateSelected += OnCalendarDateSelected;
         WeekCalendarViewModel.DateSelected += OnCalendarDateSelected;
-        
+
         UpdateYearMonthText();
     }
 
@@ -168,13 +168,13 @@ public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
     private void GoToToday()
     {
         var today = DateOnly.FromDateTime(DateTime.Now);
-        
+
         // 先更新年月，再更新选中日期，确保日历数据正确加载
         SelectedYear = today.Year;
         SelectedMonth = today.Month;
         WeekStartDate = GetWeekStartDate(today);
         SelectedDate = today;
-        
+
         // 强制触发日历更新
         UpdateCalendarDays();
     }
@@ -209,7 +209,7 @@ public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
     {
         WeekCalendarViewModel.WeekStartDate = value;
     }
-    
+
     private void UpdateYearMonthText()
     {
         YearMonthText.Set(nameof(UIText.YearMonthFormat), SelectedYear, SelectedMonth);

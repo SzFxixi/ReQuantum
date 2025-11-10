@@ -3,6 +3,7 @@ using ReQuantum.Extensions;
 using ReQuantum.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -30,6 +31,11 @@ public interface ICalendarService
     List<CalendarEvent> GetEventsByDateRange(DateOnly startDate, DateOnly endDate);
     void AddOrUpdateEvent(CalendarEvent calendarEvent);
     void DeleteEvent(Guid id);
+
+    // 日历生成相关
+    CalendarDayData GetCalendarDayData(DateOnly date);
+    List<CalendarDayData> GetMonthCalendarData(int year, int month);
+    List<CalendarDayData> GetWeekCalendarData(DateOnly weekStartDate);
 }
 
 [AutoInject(Lifetime.Singleton)]
@@ -43,6 +49,9 @@ public class CalendarService : ICalendarService
     private List<CalendarNote> _notes;
     private List<CalendarTodo> _todos;
     private List<CalendarEvent> _events;
+
+    // 日历数据字典 - 全局唯一，每个日期只有一个对象
+    private readonly Dictionary<DateOnly, CalendarDayData> _calendarDataDict = [];
 
     public CalendarService(IStorage storage)
     {
@@ -118,14 +127,32 @@ public class CalendarService : ICalendarService
 
     public void AddOrUpdateTodo(CalendarTodo todo)
     {
+        var date = DateOnly.FromDateTime(todo.DueTime);
         var index = _todos.FindIndex(t => t.Id == todo.Id);
+
         if (index >= 0)
         {
             _todos[index] = todo;
+
+            // 更新已存在日期的集合中的对应项
+            if (_calendarDataDict.TryGetValue(date, out var dayData))
+            {
+                var existingIndex = dayData.Todos.ToList().FindIndex(t => t.Id == todo.Id);
+                if (existingIndex >= 0)
+                {
+                    dayData.Todos[existingIndex] = todo;
+                }
+            }
         }
         else
         {
             _todos.Add(todo);
+
+            // 添加到已存在日期的集合中
+            if (_calendarDataDict.TryGetValue(date, out var dayData))
+            {
+                dayData.Todos.Add(todo);
+            }
         }
 
         SaveTodos();
@@ -133,7 +160,20 @@ public class CalendarService : ICalendarService
 
     public void DeleteTodo(Guid id)
     {
-        _todos.RemoveAll(t => t.Id == id);
+        var todo = _todos.FirstOrDefault(t => t.Id == id);
+        if (todo is null)
+        {
+            return;
+        }
+
+        var date = DateOnly.FromDateTime(todo.DueTime);
+        _todos.Remove(todo);
+
+        if (_calendarDataDict.TryGetValue(date, out var dayData))
+        {
+            dayData.Todos.Remove(todo);
+        }
+
         SaveTodos();
     }
 
@@ -146,6 +186,7 @@ public class CalendarService : ICalendarService
         }
 
         todo.IsCompleted = !todo.IsCompleted;
+
         SaveTodos();
     }
 
@@ -180,14 +221,48 @@ public class CalendarService : ICalendarService
 
     public void AddOrUpdateEvent(CalendarEvent calendarEvent)
     {
+        var startDate = DateOnly.FromDateTime(calendarEvent.StartTime);
+        var endDate = DateOnly.FromDateTime(calendarEvent.EndTime);
         var index = _events.FindIndex(e => e.Id == calendarEvent.Id);
+
         if (index >= 0)
         {
+            var oldEvent = _events[index];
+            var oldStartDate = DateOnly.FromDateTime(oldEvent.StartTime);
+            var oldEndDate = DateOnly.FromDateTime(oldEvent.EndTime);
+
             _events[index] = calendarEvent;
+
+            // 从旧日期范围中移除
+            for (var date = oldStartDate; date <= oldEndDate; date = date.AddDays(1))
+            {
+                if (_calendarDataDict.TryGetValue(date, out var dayData))
+                {
+                    dayData.Events.Remove(oldEvent);
+                }
+            }
+
+            // 添加到新日期范围
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                if (_calendarDataDict.TryGetValue(date, out var dayData))
+                {
+                    dayData.Events.Add(calendarEvent);
+                }
+            }
         }
         else
         {
             _events.Add(calendarEvent);
+
+            // 添加到所有相关日期（仅已存在的）
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                if (_calendarDataDict.TryGetValue(date, out var dayData))
+                {
+                    dayData.Events.Add(calendarEvent);
+                }
+            }
         }
 
         SaveEvents();
@@ -195,7 +270,25 @@ public class CalendarService : ICalendarService
 
     public void DeleteEvent(Guid id)
     {
-        _events.RemoveAll(e => e.Id == id);
+        var evt = _events.FirstOrDefault(e => e.Id == id);
+        if (evt is null)
+        {
+            return;
+        }
+        var startDate = DateOnly.FromDateTime(evt.StartTime);
+        var endDate = DateOnly.FromDateTime(evt.EndTime);
+
+        _events.Remove(evt);
+
+        // 从所有相关日期中删除（仅已存在的）
+        for (var date = startDate; date <= endDate; date = date.AddDays(1))
+        {
+            if (_calendarDataDict.TryGetValue(date, out var dayData))
+            {
+                dayData.Events.Remove(evt);
+            }
+        }
+
         SaveEvents();
     }
 
@@ -234,6 +327,74 @@ public class CalendarService : ICalendarService
     private void SaveEvents()
     {
         _storage.Set(EventsKey, _events);
+    }
+
+    #endregion
+
+    #region 日历数据生成
+
+    /// <summary>
+    /// 获取指定日期的日历数据（确保全局唯一）
+    /// </summary>
+    public CalendarDayData GetCalendarDayData(DateOnly date)
+    {
+        // 如果已存在，直接返回
+        if (_calendarDataDict.TryGetValue(date, out var existingData))
+        {
+            return existingData;
+        }
+
+        // 创建新的数据对象
+        var dayTodos = _todos.Where(t => DateOnly.FromDateTime(t.DueTime) == date).ToList();
+        var dayEvents = _events.Where(e =>
+            DateOnly.FromDateTime(e.StartTime) <= date &&
+            DateOnly.FromDateTime(e.EndTime) >= date).ToList();
+
+        var dayData = new CalendarDayData
+        {
+            Date = date,
+            Todos = new ObservableCollection<CalendarTodo>(dayTodos),
+            Events = new ObservableCollection<CalendarEvent>(dayEvents)
+        };
+
+        _calendarDataDict[date] = dayData;
+        return dayData;
+    }
+
+    /// <summary>
+    /// 获取月视图日历数据
+    /// 只返回当月的日期数据，不包括前后填充
+    /// </summary>
+    public List<CalendarDayData> GetMonthCalendarData(int year, int month)
+    {
+        var result = new List<CalendarDayData>();
+        var daysInMonth = DateTime.DaysInMonth(year, month);
+
+        // 只返回当月的日期
+        for (var day = 1; day <= daysInMonth; day++)
+        {
+            var date = new DateOnly(year, month, day);
+            result.Add(GetCalendarDayData(date));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 获取周视图日历数据
+    /// 返回该周7天的数据
+    /// </summary>
+    public List<CalendarDayData> GetWeekCalendarData(DateOnly weekStartDate)
+    {
+        var result = new List<CalendarDayData>();
+
+        for (var i = 0; i < 7; i++)
+        {
+            var date = weekStartDate.AddDays(i);
+            result.Add(GetCalendarDayData(date));
+        }
+
+        return result;
     }
 
     #endregion

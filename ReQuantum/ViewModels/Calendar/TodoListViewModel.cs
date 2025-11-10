@@ -102,20 +102,20 @@ public partial class TodoListViewModel : ViewModelBase<TodoListView>
         _coursesZjuService = coursesZjuService;
         _zjuSsoService = zjuSsoService;
         LoadTodos();
-        
+
         // 如果已登录，自动在后台抓取学在浙大待办
         if (_zjuSsoService.IsAuthenticated)
         {
             _ = SyncCoursesZjuTodosAsync();
         }
-        
+
         // 订阅登录事件，登录后自动同步
         _zjuSsoService.OnLogin += () =>
         {
             OnPropertyChanged(nameof(ShowCoursesZjuSyncButton));
             _ = SyncCoursesZjuTodosAsync();
         };
-        
+
         // 订阅登出事件，登出后隐藏按钮
         _zjuSsoService.OnLogout += () =>
         {
@@ -178,7 +178,7 @@ public partial class TodoListViewModel : ViewModelBase<TodoListView>
         _calendarService.AddOrUpdateTodo(todo);
 
         // 如果新待办的截止日期在选中日期之前或等于选中日期，则添加到列表
-        if (todo.DueDate <= SelectedDate)
+        if (DateOnly.FromDateTime(todo.DueTime) <= SelectedDate)
         {
             Todos.Add(todo);
         }
@@ -261,13 +261,10 @@ public partial class TodoListViewModel : ViewModelBase<TodoListView>
 
             // 找出已经不存在的待办，标记为已完成
             var newTodoIds = newTodos.Select(t => t.Id).ToHashSet();
-            foreach (var existingTodo in existingCoursesZjuTodos)
+            foreach (var existingTodo in existingCoursesZjuTodos.Where(existingTodo => !newTodoIds.Contains(existingTodo.Id) && !existingTodo.IsCompleted))
             {
-                if (!newTodoIds.Contains(existingTodo.Id) && !existingTodo.IsCompleted)
-                {
-                    existingTodo.IsCompleted = true;
-                    _calendarService.AddOrUpdateTodo(existingTodo);
-                }
+                existingTodo.IsCompleted = true;
+                _calendarService.AddOrUpdateTodo(existingTodo);
             }
 
             // 添加或更新新的待办

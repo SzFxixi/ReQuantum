@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReQuantum.Attributes;
 using ReQuantum.Controls;
+using ReQuantum.Services;
 using ReQuantum.Views;
 using System;
 using System.Collections.Generic;
@@ -9,8 +11,11 @@ using System.Linq;
 
 namespace ReQuantum.ViewModels;
 
+[AutoInject(Lifetime.Transient, RegisterTypes = [typeof(MonthCalendarViewModel)])]
 public partial class MonthCalendarViewModel : ViewModelBase<MonthCalendarView>
 {
+    private readonly ICalendarService _calendarService;
+
     [ObservableProperty]
     private int _year = DateTime.Now.Year;
 
@@ -27,8 +32,9 @@ public partial class MonthCalendarViewModel : ViewModelBase<MonthCalendarView>
 
     private CalendarDay? _previousSelectedDay;
 
-    public MonthCalendarViewModel()
+    public MonthCalendarViewModel(ICalendarService calendarService)
     {
+        _calendarService = calendarService;
         UpdateCalendar();
     }
 
@@ -49,7 +55,76 @@ public partial class MonthCalendarViewModel : ViewModelBase<MonthCalendarView>
 
     private void UpdateCalendar()
     {
-        var days = GenerateCalendarDays(Year, Month);
+        var days = new List<CalendarDay>();
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var firstDay = new DateOnly(Year, Month, 1);
+        var daysInMonth = DateTime.DaysInMonth(Year, Month);
+        var firstDayOfWeek = (int)firstDay.DayOfWeek;
+
+        // 添加上个月的日期（前置填充）
+        if (firstDayOfWeek > 0)
+        {
+            var prevMonth = Month == 1 ? 12 : Month - 1;
+            var prevYear = Month == 1 ? Year - 1 : Year;
+            var daysInPrevMonth = DateTime.DaysInMonth(prevYear, prevMonth);
+
+            for (var i = firstDayOfWeek - 1; i >= 0; i--)
+            {
+                var day = daysInPrevMonth - i;
+                var date = new DateOnly(prevYear, prevMonth, day);
+                var dayData = _calendarService.GetCalendarDayData(date);
+                
+                days.Add(new CalendarDay
+                {
+                    Date = date,
+                    Day = day,
+                    IsCurrentMonth = false,
+                    IsToday = date == today,
+                    IsSelected = date == SelectedDate,
+                    Items = CalendarItemsHelper.GenerateMonthViewItems(dayData.Todos.ToList(), dayData.Events.ToList()),
+                    ViewModel = this
+                });
+            }
+        }
+
+        // 添加本月的日期
+        var monthData = _calendarService.GetMonthCalendarData(Year, Month);
+        foreach (var dayData in monthData)
+        {
+            days.Add(new CalendarDay
+            {
+                Date = dayData.Date,
+                Day = dayData.Date.Day,
+                IsCurrentMonth = true,
+                IsToday = dayData.Date == today,
+                IsSelected = dayData.Date == SelectedDate,
+                Items = CalendarItemsHelper.GenerateMonthViewItems(dayData.Todos.ToList(), dayData.Events.ToList()),
+                ViewModel = this
+            });
+        }
+
+        // 添加下个月的日期（后置填充，确保总共42天）
+        var remainingDays = 42 - days.Count;
+        var nextMonth = Month == 12 ? 1 : Month + 1;
+        var nextYear = Month == 12 ? Year + 1 : Year;
+
+        for (var day = 1; day <= remainingDays; day++)
+        {
+            var date = new DateOnly(nextYear, nextMonth, day);
+            var dayData = _calendarService.GetCalendarDayData(date);
+            
+            days.Add(new CalendarDay
+            {
+                Date = date,
+                Day = day,
+                IsCurrentMonth = false,
+                IsToday = date == today,
+                IsSelected = date == SelectedDate,
+                Items = CalendarItemsHelper.GenerateMonthViewItems(dayData.Todos.ToList(), dayData.Events.ToList()),
+                ViewModel = this
+            });
+        }
+
         CalendarDays = new ObservableCollection<CalendarDay>(days);
         _previousSelectedDay = CalendarDays.FirstOrDefault(d => d.IsSelected);
     }
@@ -73,21 +148,11 @@ public partial class MonthCalendarViewModel : ViewModelBase<MonthCalendarView>
     }
 
     /// <summary>
-    /// 批量更新所有日期的事项
+    /// 刷新日历数据（重新从 Service 获取）
     /// </summary>
-    public void UpdateAllDayItems(Dictionary<DateOnly, List<CalendarDayItem>> itemsDict)
+    public void RefreshCalendarData()
     {
-        foreach (var day in CalendarDays)
-        {
-            if (itemsDict.TryGetValue(day.Date, out var items))
-            {
-                day.Items = items;
-            }
-            else
-            {
-                day.Items = [];
-            }
-        }
+        UpdateCalendar();
     }
 
     private void UpdateSelectionState(DateOnly newSelectedDate)
@@ -105,77 +170,6 @@ public partial class MonthCalendarViewModel : ViewModelBase<MonthCalendarView>
             newSelectedDay.IsSelected = true;
             _previousSelectedDay = newSelectedDay;
         }
-    }
-
-    private List<CalendarDay> GenerateCalendarDays(int year, int month)
-    {
-        var days = new List<CalendarDay>();
-        var firstDay = new DateOnly(year, month, 1);
-        var daysInMonth = DateTime.DaysInMonth(year, month);
-        var selectedDate = SelectedDate;
-
-        // 获取本月第一天是星期几（0=Sunday, 1=Monday, ...）
-        var firstDayOfWeek = (int)firstDay.DayOfWeek;
-
-        // 添加上个月的日期（填充前面的空白）
-        if (firstDayOfWeek > 0)
-        {
-            var prevMonth = month == 1 ? 12 : month - 1;
-            var prevYear = month == 1 ? year - 1 : year;
-            var daysInPrevMonth = DateTime.DaysInMonth(prevYear, prevMonth);
-
-            for (var i = firstDayOfWeek - 1; i >= 0; i--)
-            {
-                var day = daysInPrevMonth - i;
-                var date = new DateOnly(prevYear, prevMonth, day);
-                days.Add(new CalendarDay
-                {
-                    Date = date,
-                    Day = day,
-                    IsCurrentMonth = false,
-                    IsToday = false,
-                    IsSelected = date == selectedDate,
-                    ViewModel = this
-                });
-            }
-        }
-
-        // 添加本月的日期
-        var today = DateOnly.FromDateTime(DateTime.Now);
-        for (var day = 1; day <= daysInMonth; day++)
-        {
-            var date = new DateOnly(year, month, day);
-            days.Add(new CalendarDay
-            {
-                Date = date,
-                Day = day,
-                IsCurrentMonth = true,
-                IsToday = date == today,
-                IsSelected = date == selectedDate,
-                ViewModel = this
-            });
-        }
-
-        // 添加下个月的日期（填充后面的空白，确保总共6周42天）
-        var remainingDays = 42 - days.Count;
-        var nextMonth = month == 12 ? 1 : month + 1;
-        var nextYear = month == 12 ? year + 1 : year;
-
-        for (var day = 1; day <= remainingDays; day++)
-        {
-            var date = new DateOnly(nextYear, nextMonth, day);
-            days.Add(new CalendarDay
-            {
-                Date = date,
-                Day = day,
-                IsCurrentMonth = false,
-                IsToday = false,
-                IsSelected = date == selectedDate,
-                ViewModel = this
-            });
-        }
-
-        return days;
     }
 }
 

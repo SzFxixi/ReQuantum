@@ -1,10 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using ReQuantum.Controls;
 using ReQuantum.ViewModels;
 using System;
-using System.Collections.Generic;
 
 namespace ReQuantum.Views;
 
@@ -62,39 +60,8 @@ public partial class CalendarView : UserControl
 
     private void UpdateCalendarData(CalendarPartViewModel viewModel)
     {
-        // 获取当前月份的所有待办和日程
-        var startDate = new DateOnly(viewModel.SelectedYear, viewModel.SelectedMonth, 1);
-        var endDate = startDate.AddMonths(1).AddDays(-1);
-
-        var todos = viewModel.GetTodosInRange(startDate, endDate);
-        var events = viewModel.GetEventsInRange(startDate, endDate);
-
-        // 更新月视图ViewModel
-        var monthItems = new Dictionary<DateOnly, List<CalendarDayItem>>();
-        for (var date = startDate.AddDays(-7); date <= endDate.AddDays(7); date = date.AddDays(1))
-        {
-            var items = CalendarItemsHelper.GenerateMonthDayItems(date, todos, events);
-            monthItems[date] = items;
-        }
-        viewModel.MonthCalendarViewModel.UpdateAllDayItems(monthItems);
-
-        // 更新周视图ViewModel
-        var weekStartDate = viewModel.WeekStartDate;
-        var weekEndDate = weekStartDate.AddDays(6);
-
-        // 获取整周的待办和日程
-        var weekTodos = viewModel.GetTodosInRange(weekStartDate, weekEndDate);
-        var weekEvents = viewModel.GetEventsInRange(weekStartDate, weekEndDate);
-
-        var weekItems = new Dictionary<DateOnly, List<WeekTimelineItem>>();
-
-        // 为每一天生成时间线事项
-        for (var date = weekStartDate; date <= weekEndDate; date = date.AddDays(1))
-        {
-            var items = CalendarItemsHelper.GenerateWeekTimelineItems(date, weekTodos, weekEvents);
-            weekItems[date] = items;
-        }
-
-        viewModel.WeekCalendarViewModel.UpdateAllDayItems(weekItems);
+        // 直接刷新 ViewModels，它们会从 Service 获取最新数据
+        viewModel.MonthCalendarViewModel.RefreshCalendarData();
+        viewModel.WeekCalendarViewModel.RefreshCalendarData();
     }
 }

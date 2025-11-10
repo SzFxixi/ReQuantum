@@ -104,6 +104,61 @@ public static class CalendarItemsHelper
     }
 
     /// <summary>
+    /// 为月视图生成简化事项列表（基于待办和日程列表）
+    /// </summary>
+    public static List<CalendarDayItem> GenerateMonthViewItems(
+        List<CalendarTodo> todos,
+        List<CalendarEvent> events)
+    {
+        var items = todos.Select(todo => new CalendarDayItem
+        {
+            IsTodo = true,
+            Content = todo.Content,
+            IsCompleted = todo.IsCompleted
+        }).ToList();
+
+        items.AddRange(events.Select(evt => new CalendarDayItem
+        {
+            IsEvent = true,
+            Content = evt.Content
+        }));
+
+        if (items.Count <= 3)
+        {
+            return items;
+        }
+
+        var result = items.Take(2).ToList();
+        result.Add(new CalendarDayItem
+        {
+            IsMore = true,
+            Content = SingletonManager.Instance.GetInstance<ILocalizer>()[nameof(UIText.MoreItems), items.Count - 2],
+            RemainingCount = items.Count - 2
+        });
+        return result;
+    }
+
+    /// <summary>
+    /// 为周视图生成时间线事项列表（基于待办和日程列表）
+    /// </summary>
+    public static List<WeekTimelineItem> GenerateWeekViewItems(
+        List<CalendarTodo> todos,
+        List<CalendarEvent> events)
+    {
+        if (todos.Count == 0 && events.Count == 0)
+        {
+            return [];
+        }
+
+        // 使用第一个事项的日期（因为传入的都是同一天的）
+        var date = todos.Count > 0
+            ? DateOnly.FromDateTime(todos[0].DueTime)
+            : DateOnly.FromDateTime(events[0].StartTime);
+
+        return GenerateWeekTimelineItems(date, todos, events);
+    }
+
+    /// <summary>
     /// 为月视图生成简化事项列表（最多3条）
     /// 待办显示规则：只在截止日期当天显示TAG
     /// </summary>

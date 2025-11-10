@@ -20,7 +20,4 @@ public class CalendarTodo
         CreatedAt = DateTime.Now;
         DueTime = DateTime.Now;
     }
-
-    // 便捷属性：获取截止日期
-    public DateOnly DueDate => DateOnly.FromDateTime(DueTime);
 }
