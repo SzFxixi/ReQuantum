@@ -94,6 +94,7 @@ public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
     private void SwitchToMonthView()
     {
         CurrentViewType = CalendarViewType.Month;
+        YearMonthText.Set(nameof(UIText.YearMonthFormat), SelectedDate.Year, SelectedDate.Month);
     }
 
     #endregion
@@ -167,6 +168,8 @@ public partial class CalendarPartViewModel : ViewModelBase<CalendarPartView>
     private void GoToToday()
     {
         var today = DateOnly.FromDateTime(DateTime.Now);
+
+        SelectedDate = today;
 
         // 更新子 ViewModel 的年月、周起始日期和选中日期
         MonthCalendarViewModel.Year = today.Year;

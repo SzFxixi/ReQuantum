@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:ReQuantum.ViewModels"
-             xmlns:views="clr-namespace:ReQuantum.Views"
+             xmlns:views="clr-namespace:ReQuantum.Views" 
+             xmlns:controls="clr-namespace:ReQuantum.Controls"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="ReQuantum.Views.CalendarView"
              x:DataType="viewModels:CalendarViewModel">
@@ -88,7 +89,9 @@
               CornerRadius="8"
               Padding="24"
               MaxWidth="700"
-              MinWidth="550"
+              MinWidth="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMinWidthConverter}}"
+              Width="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogWidthConverter}}"
+              Margin="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMarginConverter}}"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="16">
@@ -163,7 +166,9 @@
               CornerRadius="8"
               Padding="24"
               MaxWidth="600"
-              MinWidth="400"
+              MinWidth="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMinWidthConverter}}"
+              Width="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogWidthConverter}}"
+              Margin="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMarginConverter}}"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="16">
@@ -197,7 +202,9 @@
               CornerRadius="8"
               Padding="24"
               MaxWidth="700"
-              MinWidth="550"
+              MinWidth="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMinWidthConverter}}"
+              Width="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogWidthConverter}}"
+              Margin="{Binding WindowService.IsDesktopMode, Converter={x:Static controls:CalendarConverters.IsDesktopModeToDialogMarginConverter}}"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
         <StackPanel Spacing="16">

@@ -154,7 +154,7 @@ public class ZjuSsoService : IZjuSsoService
             var messageBytes = Encoding.UTF8.GetBytes(message);
 
             // 将消息字节转换为BigInteger
-            var m = new BigInteger(messageBytes.Reverse().Concat(new byte[] { 0 }).ToArray());
+            var m = new BigInteger(Enumerable.Reverse(messageBytes).Concat(new byte[] { 0 }).ToArray());
 
             // 执行RSA加密: c = m^e mod n
             var c = BigInteger.ModPow(m, e, n);
@@ -163,7 +163,7 @@ public class ZjuSsoService : IZjuSsoService
             var keyLength = (n.ToString("X").Length + 1) / 2;
 
             // 将加密后的BigInteger转换为字节数组
-            var result = c.ToByteArray().Reverse().ToArray();
+            var result = Enumerable.Reverse(c.ToByteArray()).ToArray();
 
             // 确保结果长度正确
             if (result.Length > keyLength)

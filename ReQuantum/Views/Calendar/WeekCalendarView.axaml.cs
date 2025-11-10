@@ -8,4 +8,10 @@ public partial class WeekCalendarView : UserControl
     {
         InitializeComponent();
     }
+
+    private void Grid_RequestBringIntoView(object? sender, RequestBringIntoViewEventArgs e)
+    {
+        // Cancel the bring into view request to prevent viewport jumping
+        e.Handled = true;
+    }
 }

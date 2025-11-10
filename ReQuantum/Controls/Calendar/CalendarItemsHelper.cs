@@ -1,6 +1,7 @@
 using ReQuantum.Models;
 using ReQuantum.Resources.I18n;
 using ReQuantum.Services;
+using ReQuantum.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

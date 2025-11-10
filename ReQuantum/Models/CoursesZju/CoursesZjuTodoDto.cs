@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ReQuantum.Models;
@@ -29,9 +28,6 @@ public class CoursesZjuTodoDto
 
     [JsonPropertyName("course_code")]
     public required string CourseCode { get; init; }
-
-    [JsonPropertyName("prerequisites")]
-    public required List<long> Prerequisites { get; init; }
 
     [JsonPropertyName("is_student")]
     public required bool IsStudent { get; init; }

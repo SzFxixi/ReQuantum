@@ -69,4 +69,28 @@ public static class CalendarConverters
     /// </summary>
     public static readonly IValueConverter WidthTo95PercentConverter = new FuncValueConverter<double, double>(width =>
         width * 0.95);
+
+    /// <summary>
+    /// 根据是否为桌面端返回对话框最小宽度
+    /// 桌面端：返回550（固定最小宽度）
+    /// 移动端：返回0（不限制最小宽度）
+    /// </summary>
+    public static readonly IValueConverter IsDesktopModeToDialogMinWidthConverter = new FuncValueConverter<bool, double>(isDesktop =>
+        isDesktop ? 550 : 0);
+
+    /// <summary>
+    /// 根据是否为桌面端返回对话框宽度
+    /// 桌面端：返回NaN（自动宽度）
+    /// 移动端：返回NaN（自动宽度，但会被Margin限制）
+    /// </summary>
+    public static readonly IValueConverter IsDesktopModeToDialogWidthConverter = new FuncValueConverter<bool, double>(isDesktop =>
+        double.NaN);
+
+    /// <summary>
+    /// 根据是否为桌面端返回对话框边距
+    /// 桌面端：返回0（无边距）
+    /// 移动端：返回16（左右各16像素边距）
+    /// </summary>
+    public static readonly IValueConverter IsDesktopModeToDialogMarginConverter = new FuncValueConverter<bool, Thickness>(isDesktop =>
+        isDesktop ? new Thickness(0) : new Thickness(16, 0));
 }

@@ -30,9 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\Calendar\MonthCalendarControl.axaml.cs">
-      <DependentUpon>MonthCalendarControl.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Resources\I18n\UIText.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

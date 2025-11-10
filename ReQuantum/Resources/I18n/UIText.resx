@@ -338,7 +338,4 @@
   <data name="SyncCoursesZju" xml:space="preserve">
     <value>Sync ZJU</value>
   </data>
-  <data name="DueTime" xml:space="preserve">
-    <value>Due</value>
-  </data>
 </root>

@@ -28,6 +28,7 @@ public class CoursesZjuService : ICoursesZjuService
     {
         _zjuSsoService = zjuSsoService;
         _storage = storage;
+        _zjuSsoService.OnLogout += () => _state = null;
         LoadState();
     }
 
@@ -47,6 +48,8 @@ public class CoursesZjuService : ICoursesZjuService
             _state = null;
             return Result.Fail($"获取待办事项失败: {result.StatusCode}");
         }
+
+        var str = await result.Content.ReadAsStringAsync();
 
         var response = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.CoursesZjuTodosResponse);
         if (response is null)
