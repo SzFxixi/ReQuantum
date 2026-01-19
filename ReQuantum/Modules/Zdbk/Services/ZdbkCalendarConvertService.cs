@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
-using ReQuantum.Attributes;
 using ReQuantum.Modules.Calendar.Entities;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Zdbk.Models;
 using ReQuantum.Utilities;
 using System;
@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 namespace ReQuantum.Modules.Zdbk.Services;
 
 /// <summary>
-/// ½ÌÎñÍø¿Î³Ì±íµ½ÈÕÀúÊÂ¼şµÄ×ª»»·şÎñ
+/// æ•™åŠ¡ç½‘è¯¾ç¨‹è¡¨åˆ°æ—¥å†äº‹ä»¶çš„è½¬æ¢æœåŠ¡
 /// </summary>
 public interface IZdbkCalendarConverter
 {
     /// <summary>
-    /// ½«½ÌÎñÍø¿Î³ÌÁĞ±í×ª»»ÎªÈÕÀúÊÂ¼şÁĞ±í
+    /// å°†æ•™åŠ¡ç½‘è¯¾ç¨‹åˆ—è¡¨è½¬æ¢ä¸ºæ—¥å†äº‹ä»¶åˆ—è¡¨
     /// </summary>
-    /// <param name="sections">¿Î³ÌÁĞ±í</param>
-    /// <param name="academicYear">Ñ§Äê£¨Èç "2024-2025"£©</param>
-    /// <param name="semester">Ñ§ÆÚ£¨Èç "Çï"¡¢"¶¬"¡¢"´º"¡¢"ÏÄ"£©</param>
-    /// <returns>ÈÕÀúÊÂ¼şÁĞ±í</returns>
+    /// <param name="sections">è¯¾ç¨‹åˆ—è¡¨</param>
+    /// <param name="academicYear">å­¦å¹´ï¼ˆå¦‚ "2024-2025"ï¼‰</param>
+    /// <param name="semester">å­¦æœŸï¼ˆå¦‚ "ç§‹"ã€"å†¬"ã€"æ˜¥"ã€"å¤"ï¼‰</param>
+    /// <returns>æ—¥å†äº‹ä»¶åˆ—è¡¨</returns>
     Task<List<CalendarEvent>> ConvertToCalendarEventsAsync(
         IEnumerable<ZdbkSectionDto> sections,
         string academicYear,
@@ -56,14 +56,14 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
             return events;
         }
 
-        // ½ö±£ÁôÓëÄ¿±êÑ§ÆÚÆ¥ÅäµÄ¿Î³Ì£¨Term °üº¬Ñ§ÆÚ¹Ø¼ü×Ö£¬ÀıÈç£º"Çï" »ò "¶¬"£©
+        // ä»…ä¿ç•™ä¸ç›®æ ‡å­¦æœŸåŒ¹é…çš„è¯¾ç¨‹ï¼ˆTerm åŒ…å«å­¦æœŸå…³é”®å­—ï¼Œä¾‹å¦‚ï¼š"ç§‹" æˆ– "å†¬"ï¼‰
         var beforeFilter = sectionList.Count;
         sectionList = sectionList
             .Where(s => !string.IsNullOrWhiteSpace(s.Term) && s.Term.Contains(semester, StringComparison.Ordinal))
             .ToList();
         _logger.LogInformation("Filtered sections by semester '{Semester}': {Before} -> {After}", semester, beforeFilter, sectionList.Count);
 
-        // »ñÈ¡Ğ£Àú£¨ÓÃÓÚµ÷¿ÎºÍÍ£¿ÎÂß¼­£©
+        // è·å–æ ¡å†ï¼ˆç”¨äºè°ƒè¯¾å’Œåœè¯¾é€»è¾‘ï¼‰
         var calendarResult = await _calendarService.GetCurrentCalendarAsync();
 
         if (!calendarResult.IsSuccess)
@@ -87,7 +87,7 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
             calendar.CourseAdjustments.Count,
             calendar.ClassSuspensionDates.Count);
 
-        // ¼ÆËãÑ§ÆÚÆğÊ¼ÈÕÆÚ
+        // è®¡ç®—å­¦æœŸèµ·å§‹æ—¥æœŸ
         var semesterStartDate = CalculateSemesterStartDate(calendar, semester);
 
         _logger.LogInformation("Converting {Count} sections for {Semester} semester with start date {StartDate}",
@@ -113,29 +113,29 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
     }
 
     /// <summary>
-    /// ¼ÆËãÑ§ÆÚÆğÊ¼ÈÕÆÚ
-    /// Çï/´ºÑ§ÆÚ£ºÊ¹ÓÃĞ£ÀúµÄStartDate
-    /// ¶¬/ÏÄÑ§ÆÚ£ºÔÚ´óÑ§ÆÚ»ù´¡ÉÏ¼Ó8ÖÜ£¬²¢È·±£ÊÇÖÜÒ»
+    /// è®¡ç®—å­¦æœŸèµ·å§‹æ—¥æœŸ
+    /// ç§‹/æ˜¥å­¦æœŸï¼šä½¿ç”¨æ ¡å†çš„StartDate
+    /// å†¬/å¤å­¦æœŸï¼šåœ¨å¤§å­¦æœŸåŸºç¡€ä¸ŠåŠ 8å‘¨ï¼Œå¹¶ç¡®ä¿æ˜¯å‘¨ä¸€
     /// </summary>
     private DateOnly CalculateSemesterStartDate(AcademicCalendar calendar, string semester)
     {
-        if (semester is "Çï" or "´º")
+        if (semester is "ç§‹" or "æ˜¥")
         {
             _logger.LogDebug("Using calendar start date {StartDate} for {Semester}", calendar.StartDate, semester);
             return calendar.StartDate;
         }
 
-        if (semester is "¶¬" or "ÏÄ")
+        if (semester is "å†¬" or "å¤")
         {
             var subSemesterStart = calendar.StartDate.AddDays(56);
 
-            // µ÷Õûµ½ÖÜÒ»
+            // è°ƒæ•´åˆ°å‘¨ä¸€
             var dayOfWeek = (int)subSemesterStart.DayOfWeek;
-            if (dayOfWeek == 0) // ÖÜÈÕ
+            if (dayOfWeek == 0) // å‘¨æ—¥
             {
                 subSemesterStart = subSemesterStart.AddDays(1);
             }
-            else if (dayOfWeek != 1) // ²»ÊÇÖÜÒ»
+            else if (dayOfWeek != 1) // ä¸æ˜¯å‘¨ä¸€
             {
                 subSemesterStart = subSemesterStart.AddDays(1 - dayOfWeek);
             }
@@ -151,27 +151,27 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
     }
 
     /// <summary>
-    /// »ñÈ¡Ñ§ÆÚ´úÂë£¨1»ò2£©
+    /// è·å–å­¦æœŸä»£ç ï¼ˆ1æˆ–2ï¼‰
     /// </summary>
     private static string GetSemesterCode(string semester)
     {
         return semester switch
         {
-            "Çï" => "1",
-            "¶¬" => "1",
-            "´º" => "2",
-            "ÏÄ" => "2",
+            "ç§‹" => "1",
+            "å†¬" => "1",
+            "æ˜¥" => "2",
+            "å¤" => "2",
             _ => "1"
         };
     }
 
     /// <summary>
-    /// ½«µ¥¸ö¿Î³Ì×ª»»ÎªÈÕÀúÊÂ¼şÁĞ±í
+    /// å°†å•ä¸ªè¯¾ç¨‹è½¬æ¢ä¸ºæ—¥å†äº‹ä»¶åˆ—è¡¨
     /// </summary>
-    /// <param name="section">¿Î³ÌĞÅÏ¢</param>
-    /// <param name="semesterStartDate">Ñ§ÆÚÆğÊ¼ÈÕÆÚ</param>
-    /// <param name="calendar">Ğ£ÀúĞÅÏ¢£¨¿ÉÑ¡£¬ÓÃÓÚµ÷¿ÎºÍÍ£¿ÎÂß¼­£©</param>
-    /// <param name="semester">Ñ§ÆÚÃû³Æ£¨ÓÃÓÚÖÜ´Î¹éÁã£©</param>
+    /// <param name="section">è¯¾ç¨‹ä¿¡æ¯</param>
+    /// <param name="semesterStartDate">å­¦æœŸèµ·å§‹æ—¥æœŸ</param>
+    /// <param name="calendar">æ ¡å†ä¿¡æ¯ï¼ˆå¯é€‰ï¼Œç”¨äºè°ƒè¯¾å’Œåœè¯¾é€»è¾‘ï¼‰</param>
+    /// <param name="semester">å­¦æœŸåç§°ï¼ˆç”¨äºå‘¨æ¬¡å½’é›¶ï¼‰</param>
     private static List<CalendarEvent> ConvertSectionToEvents(
         ZdbkSectionDto section,
         DateOnly semesterStartDate,
@@ -183,7 +183,7 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
 
         for (var weekNumber = courseInfo.WeekStart; weekNumber <= courseInfo.WeekEnd; weekNumber++)
         {
-            // ¼ì²éµ¥Ë«ÖÜ
+            // æ£€æŸ¥å•åŒå‘¨
             if (!ShouldHaveCourseInWeek(weekNumber, int.Parse(section.WeekType)))
             {
                 continue;
@@ -191,7 +191,7 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
 
             var originalDate = CalculateCourseDate(semesterStartDate, weekNumber, int.Parse(section.DayOfWeek));
 
-            // Ó¦ÓÃĞ£ÀúµÄµ÷¿ÎºÍÍ£¿ÎÂß¼­
+            // åº”ç”¨æ ¡å†çš„è°ƒè¯¾å’Œåœè¯¾é€»è¾‘
             var actualDate = ApplyCalendarAdjustments(originalDate, calendar, out var shouldSkip);
 
             if (shouldSkip)
@@ -218,26 +218,26 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
     }
 
     /// <summary>
-    /// ÅĞ¶ÏÄ³ÖÜÊÇ·ñÓĞ¿Î£¨¸ù¾İÖÜÀàĞÍ£©
+    /// åˆ¤æ–­æŸå‘¨æ˜¯å¦æœ‰è¯¾ï¼ˆæ ¹æ®å‘¨ç±»å‹ï¼‰
     /// </summary>
     private static bool ShouldHaveCourseInWeek(int weekNumber, int weekType)
     {
         return weekType switch
         {
-            0 => weekNumber % 2 == 1, // µ¥ÖÜ
-            1 => weekNumber % 2 == 0, // Ë«ÖÜ
-            2 => true,                // Ã¿ÖÜ
+            0 => weekNumber % 2 == 1, // å•å‘¨
+            1 => weekNumber % 2 == 0, // åŒå‘¨
+            2 => true,                // æ¯å‘¨
             _ => false
         };
     }
 
     /// <summary>
-    /// Ó¦ÓÃĞ£ÀúµÄµ÷¿ÎºÍÍ£¿ÎÂß¼­
+    /// åº”ç”¨æ ¡å†çš„è°ƒè¯¾å’Œåœè¯¾é€»è¾‘
     /// </summary>
-    /// <param name="originalDate">Ô­Ê¼ÉÏ¿ÎÈÕÆÚ</param>
-    /// <param name="calendar">Ğ£ÀúĞÅÏ¢</param>
-    /// <param name="shouldSkip">ÊÇ·ñÓ¦¸ÃÌø¹ı¸ÃÈÕÆÚ£¨Í£¿Î£©</param>
-    /// <returns>µ÷ÕûºóµÄÊµ¼ÊÉÏ¿ÎÈÕÆÚ</returns>
+    /// <param name="originalDate">åŸå§‹ä¸Šè¯¾æ—¥æœŸ</param>
+    /// <param name="calendar">æ ¡å†ä¿¡æ¯</param>
+    /// <param name="shouldSkip">æ˜¯å¦åº”è¯¥è·³è¿‡è¯¥æ—¥æœŸï¼ˆåœè¯¾ï¼‰</param>
+    /// <returns>è°ƒæ•´åçš„å®é™…ä¸Šè¯¾æ—¥æœŸ</returns>
     private static DateOnly ApplyCalendarAdjustments(
         DateOnly originalDate,
         AcademicCalendar? calendar,
@@ -250,14 +250,14 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
             return originalDate;
         }
 
-        // ¼ì²é¸ÃÈÕÆÚÊÇ·ñÍ£¿Î
+        // æ£€æŸ¥è¯¥æ—¥æœŸæ˜¯å¦åœè¯¾
         if (calendar.IsSuspended(originalDate))
         {
             shouldSkip = true;
             return originalDate;
         }
 
-        // ¼ì²éÊÇ·ñÓĞµ÷¿Î
+        // æ£€æŸ¥æ˜¯å¦æœ‰è°ƒè¯¾
         var adjustmentFrom = calendar.CourseAdjustments
             .FirstOrDefault(a => a.OriginalDate == originalDate);
 
@@ -276,7 +276,7 @@ public class ZdbkCalendarConvertService : IZdbkCalendarConverter
     }
 
     /// <summary>
-    /// ¸ù¾İÑ§ÆÚÆğÊ¼ÈÕÆÚ¡¢ÖÜ´ÎºÍĞÇÆÚ¼¸¼ÆËã¾ßÌåÉÏ¿ÎÈÕÆÚ
+    /// æ ¹æ®å­¦æœŸèµ·å§‹æ—¥æœŸã€å‘¨æ¬¡å’Œæ˜ŸæœŸå‡ è®¡ç®—å…·ä½“ä¸Šè¯¾æ—¥æœŸ
     /// </summary>
     private static DateOnly CalculateCourseDate(DateOnly semesterStartDate, int weekNumber, int dayOfWeek)
     {

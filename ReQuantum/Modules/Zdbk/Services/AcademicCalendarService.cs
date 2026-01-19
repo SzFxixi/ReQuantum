@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Models;
 using ReQuantum.Infrastructure.Services;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Zdbk.Models;
 using System;
 using System.IO;
@@ -16,17 +16,17 @@ namespace ReQuantum.Modules.Zdbk.Services;
 public interface IAcademicCalendarService
 {
     /// <summary>
-    /// »ñÈ¡µ±Ç°Ğ£Àú
+    /// è·å–å½“å‰æ ¡å†
     /// </summary>
     Task<Result<AcademicCalendar>> GetCurrentCalendarAsync();
 
     /// <summary>
-    /// Ë¢ĞÂĞ£Àú
+    /// åˆ·æ–°æ ¡å†
     /// </summary>
     Task<Result<AcademicCalendar>> RefreshCalendarAsync();
 
     /// <summary>
-    /// »ñÈ¡»º´æµÄĞ£Àú
+    /// è·å–ç¼“å­˜çš„æ ¡å†
     /// </summary>
     AcademicCalendar? GetCachedCalendar();
 }
@@ -39,8 +39,8 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
     private readonly HttpClient _httpClient;
 
     private const string StorageKey = "Zdbk:AcademicCalendar";
-    private const string CalendarApiUrl = "https://api.example.com/zju/calendar/current"; // TODO: Ìæ»»ÎªÊµ¼ÊµÄ API µØÖ·
-    private const string FallbackCalendarFilePath = "Data/calendar.json"; // FallbackĞ£ÀúÊı¾İÎÄ¼şÂ·¾¶
+    private const string CalendarApiUrl = "https://api.example.com/zju/calendar/current"; // TODO: æ›¿æ¢ä¸ºå®é™…çš„ API åœ°å€
+    private const string FallbackCalendarFilePath = "Data/calendar.json"; // Fallbackæ ¡å†æ•°æ®æ–‡ä»¶è·¯å¾„
 
     private AcademicCalendar? _cachedCalendar;
 
@@ -53,20 +53,20 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
         _logger = logger;
         _httpClient = httpClient;
 
-        // Æô¶¯Ê±¼ÓÔØ»º´æ
+        // å¯åŠ¨æ—¶åŠ è½½ç¼“å­˜
         LoadCachedCalendar();
     }
 
     public async Task<Result<AcademicCalendar>> GetCurrentCalendarAsync()
     {
-        // Èç¹ûÓĞ»º´æÇÒ°æ±¾ÓĞĞ§£¬Ö±½Ó·µ»Ø
+        // å¦‚æœæœ‰ç¼“å­˜ä¸”ç‰ˆæœ¬æœ‰æ•ˆï¼Œç›´æ¥è¿”å›
         if (_cachedCalendar != null)
         {
             _logger.LogDebug("Using cached calendar version {Version}", _cachedCalendar.Version);
             return Result.Success(_cachedCalendar);
         }
 
-        // ·ñÔò´Ó·şÎñÆ÷»ñÈ¡
+        // å¦åˆ™ä»æœåŠ¡å™¨è·å–
         return await RefreshCalendarAsync();
     }
 
@@ -81,7 +81,7 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("Failed to fetch calendar: {StatusCode}", response.StatusCode);
-                // ·şÎñÆ÷»ñÈ¡Ê§°Ü£¬³¢ÊÔ´Ó±¾µØÎÄ¼ş¶ÁÈ¡
+                // æœåŠ¡å™¨è·å–å¤±è´¥ï¼Œå°è¯•ä»æœ¬åœ°æ–‡ä»¶è¯»å–
                 return await LoadFromFallbackFileAsync();
             }
 
@@ -91,11 +91,11 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
             if (calendarResponse is not { Success: true } || calendarResponse.Data == null)
             {
                 _logger.LogError("Invalid calendar response: {Message}", calendarResponse?.Message);
-                // ·şÎñÆ÷·µ»ØÎŞĞ§£¬³¢ÊÔ´Ó±¾µØÎÄ¼ş¶ÁÈ¡
+                // æœåŠ¡å™¨è¿”å›æ— æ•ˆï¼Œå°è¯•ä»æœ¬åœ°æ–‡ä»¶è¯»å–
                 return await LoadFromFallbackFileAsync();
             }
 
-            // ¸üĞÂ»º´æ
+            // æ›´æ–°ç¼“å­˜
             _cachedCalendar = calendarResponse.Data;
             SaveCalendar(_cachedCalendar);
 
@@ -111,13 +111,13 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
         catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "Network error when fetching calendar");
-            // ÍøÂç´íÎó£¬³¢ÊÔ´Ó±¾µØÎÄ¼ş¶ÁÈ¡
+            // ç½‘ç»œé”™è¯¯ï¼Œå°è¯•ä»æœ¬åœ°æ–‡ä»¶è¯»å–
             return await LoadFromFallbackFileAsync();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred when fetching calendar");
-            return Result.Fail($"»ñÈ¡Ğ£ÀúÊ§°Ü£º{ex.Message}");
+            return Result.Fail($"è·å–æ ¡å†å¤±è´¥ï¼š{ex.Message}");
         }
     }
 
@@ -127,7 +127,7 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
     }
 
     /// <summary>
-    /// ´ÓFallbackÎÄ¼ş¼ÓÔØĞ£Àú
+    /// ä»Fallbackæ–‡ä»¶åŠ è½½æ ¡å†
     /// </summary>
     private async Task<Result<AcademicCalendar>> LoadFromFallbackFileAsync()
     {
@@ -139,7 +139,7 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
             if (!File.Exists(fallbackFilePath))
             {
                 _logger.LogError("Fallback calendar file not found: {Path}", fallbackFilePath);
-                return Result.Fail($"FallbackÎÄ¼ş²»´æÔÚ: {fallbackFilePath}");
+                return Result.Fail($"Fallbackæ–‡ä»¶ä¸å­˜åœ¨: {fallbackFilePath}");
             }
 
             _logger.LogInformation("Loading calendar from fallback file: {Path}", fallbackFilePath);
@@ -152,10 +152,10 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
             if (calendar == null)
             {
                 _logger.LogError("Failed to parse fallback calendar file");
-                return Result.Fail("FallbackÎÄ¼ş½âÎöÊ§°Ü");
+                return Result.Fail("Fallbackæ–‡ä»¶è§£æå¤±è´¥");
             }
 
-            // ¸üĞÂ»º´æ
+            // æ›´æ–°ç¼“å­˜
             _cachedCalendar = calendar;
             SaveCalendar(_cachedCalendar);
 
@@ -171,7 +171,7 @@ public class AcademicCalendarService : IAcademicCalendarService, IDaemonService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to load calendar from fallback file");
-            return Result.Fail($"¶ÁÈ¡FallbackÎÄ¼şÊ§°Ü£º{ex.Message}");
+            return Result.Fail($"è¯»å–Fallbackæ–‡ä»¶å¤±è´¥ï¼š{ex.Message}");
         }
     }
 

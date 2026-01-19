@@ -18,13 +18,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <AvaloniaXaml Remove="Modules\NewFolder\**" />
-    <Compile Remove="Modules\NewFolder\**" />
-    <EmbeddedResource Remove="Modules\NewFolder\**" />
-    <None Remove="Modules\NewFolder\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Fonts.Inter" />
@@ -53,10 +46,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>UIText.resx</DependentUpon>
     </Compile>
-    <Compile Update="Infrastructure\Presentations\ShellWindow.axaml.cs">
+    <Compile Update="Modules\Common\Presentations\ShellWindow.axaml.cs">
       <DependentUpon>ShellWindow.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Infrastructure\Presentations\ShellView.axaml.cs">
+    <Compile Update="Modules\Common\Presentations\ShellView.axaml.cs">
       <DependentUpon>ShellView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Modules\Calendar\Presentations\CalendarView.axaml.cs">

@@ -1,10 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
 using ReQuantum.Modules.Calendar.Services;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.CoursesZju.Models;
 using ReQuantum.Modules.CoursesZju.Services;
 using ReQuantum.Modules.ZjuSso.Services;
@@ -18,8 +18,8 @@ using System.Threading.Tasks;
 
 namespace ReQuantum.ViewModels;
 
-[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(TodoListViewModel), typeof(INotificationHandler<CalendarSelectedDateChanged>)])]
-public partial class TodoListViewModel : ViewModelBase<TodoListView>, INotificationHandler<CalendarSelectedDateChanged>
+[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(TodoListViewModel), typeof(IEventHandler<CalendarSelectedDateChanged>)])]
+public partial class TodoListViewModel : ViewModelBase<TodoListView>, IEventHandler<CalendarSelectedDateChanged>
 {
     private readonly ICalendarService _calendarService;
     private readonly ICoursesZjuService _coursesZjuService;
@@ -287,9 +287,9 @@ public partial class TodoListViewModel : ViewModelBase<TodoListView>, INotificat
 
     #endregion
 
-    public void Handle(CalendarSelectedDateChanged notification)
+    public void Handle(CalendarSelectedDateChanged @event)
     {
-        SelectedDate = notification.Date;
+        SelectedDate = @event.Date;
     }
 }
 

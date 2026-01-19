@@ -1,10 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
 using ReQuantum.Modules.Calendar.Services;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Zdbk.Services;
 using ReQuantum.Modules.ZjuSso.Services;
 using ReQuantum.Resources.I18n;
@@ -19,8 +19,8 @@ using LocalizedText = ReQuantum.Infrastructure.Entities.LocalizedText;
 
 namespace ReQuantum.Modules.Calendar.Presentations;
 
-[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(EventListViewModel), typeof(INotificationHandler<CalendarSelectedDateChanged>)])]
-public partial class EventListViewModel : ViewModelBase<EventListView>, INotificationHandler<CalendarSelectedDateChanged>
+[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(EventListViewModel), typeof(IEventHandler<CalendarSelectedDateChanged>)])]
+public partial class EventListViewModel : ViewModelBase<EventListView>, IEventHandler<CalendarSelectedDateChanged>
 {
     private readonly ICalendarService _calendarService;
     private readonly IZdbkSectionScheduleService _zdbkService;
@@ -273,13 +273,15 @@ public partial class EventListViewModel : ViewModelBase<EventListView>, INotific
     [RelayCommand]
     private async Task SyncZdbkScheduleAsync()
     {
-        if (IsSyncingZdbk) return;
+        if (IsSyncingZdbk)
+            return;
         IsSyncingZdbk = true;
 
         try
         {
             var scheduleResult = await _zdbkService.GetCurrentSemesterScheduleAsync();
-            if (!scheduleResult.IsSuccess) return;
+            if (!scheduleResult.IsSuccess)
+                return;
 
             var schedule = scheduleResult.Value;
             var allNewEvents = new List<CalendarEvent>();
@@ -325,7 +327,7 @@ public partial class EventListViewModel : ViewModelBase<EventListView>, INotific
             foreach (var evt in allNewEvents)
                 _calendarService.AddOrUpdateEvent(evt);
 
-            Dispatcher.Publish(new CalendarSelectedDateChanged(SelectedDate));
+            Publisher.Publish(new CalendarSelectedDateChanged(SelectedDate));
         }
         finally
         {
@@ -335,8 +337,8 @@ public partial class EventListViewModel : ViewModelBase<EventListView>, INotific
 
     #endregion
 
-    public void Handle(CalendarSelectedDateChanged notification)
+    public void Handle(CalendarSelectedDateChanged @event)
     {
-        SelectedDate = notification.Date;
+        SelectedDate = @event.Date;
     }
 }

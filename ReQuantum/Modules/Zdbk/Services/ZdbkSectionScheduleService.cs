@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Models;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Zdbk.Models;
 using ReQuantum.Modules.ZjuSso.Services;
 using ReQuantum.Utilities;
@@ -60,7 +60,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
             var calendarResult = await _calendarService.GetCurrentCalendarAsync();
             if (!calendarResult.IsSuccess)
             {
-                return Result.Fail($"ÎÞ·¨»ñÈ¡Ð£Àú£º{calendarResult.Message}");
+                return Result.Fail($"æ— æ³•èŽ·å–æ ¡åŽ†ï¼š{calendarResult.Message}");
             }
 
             var calendar = calendarResult.Value;
@@ -69,7 +69,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
 
             if (weekNumber == null)
             {
-                return Result.Fail("µ±Ç°ÈÕÆÚ²»ÔÚÑ§ÆÚ·¶Î§ÄÚ");
+                return Result.Fail("å½“å‰æ—¥æœŸä¸åœ¨å­¦æœŸèŒƒå›´å†…");
             }
 
             var currentSemester = calendar.GetSemesterNameForWeek(weekNumber.Value);
@@ -78,7 +78,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
 
             _logger.LogInformation("Fetching {Year} {S1} and {S2}", currentYear, semester1, semester2);
 
-            // ²¢ÐÐ»ñÈ¡Á½¸öÑ§ÆÚµÄ¿Î³Ì
+            // å¹¶è¡ŒèŽ·å–ä¸¤ä¸ªå­¦æœŸçš„è¯¾ç¨‹
             var task1 = GetCourseScheduleAsync(currentYear, semester1);
             var task2 = GetCourseScheduleAsync(currentYear, semester2);
             await Task.WhenAll(task1, task2);
@@ -92,16 +92,16 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
 
             if (combinedSections.Count == 0)
             {
-                return Result.Fail("ËùÓÐÑ§ÆÚ¾ùÎÞ·¨»ñÈ¡");
+                return Result.Fail("æ‰€æœ‰å­¦æœŸå‡æ— æ³•èŽ·å–");
             }
 
-            // ·µ»ØºÏ²¢µÄ½á¹û£¬µ«±£ÁôÁ½¸öÑ§ÆÚµÄÐÅÏ¢
+            // è¿”å›žåˆå¹¶çš„ç»“æžœï¼Œä½†ä¿ç•™ä¸¤ä¸ªå­¦æœŸçš„ä¿¡æ¯
             return Result.Success(new ZdbkSectionScheduleResponse
             {
                 SectionList = combinedSections,
                 AcademicYear = currentYear,
-                Semester = currentSemester, // µ±Ç°Ñ§ÆÚ
-                RelatedSemesters = new[] { semester1, semester2 }, // ÐÂÔö£º±£´æÁ½¸öÑ§ÆÚÃû³Æ
+                Semester = currentSemester, // å½“å‰å­¦æœŸ
+                RelatedSemesters = new[] { semester1, semester2 }, // æ–°å¢žï¼šä¿å­˜ä¸¤ä¸ªå­¦æœŸåç§°
                 StudentId = result1.IsSuccess ? result1.Value.StudentId : result2.Value?.StudentId,
                 StudentName = result1.IsSuccess ? result1.Value.StudentName : result2.Value?.StudentName,
                 AdministrativeClass = result1.IsSuccess ? result1.Value.AdministrativeClass : result2.Value?.AdministrativeClass,
@@ -112,7 +112,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error fetching schedules");
-            return Result.Fail($"»ñÈ¡¿Î³Ì±íÊ§°Ü£º{ex.Message}");
+            return Result.Fail($"èŽ·å–è¯¾ç¨‹è¡¨å¤±è´¥ï¼š{ex.Message}");
         }
     }
 
@@ -120,9 +120,9 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
     {
         return currentSemester switch
         {
-            "Çï" or "¶¬" => ("Çï", "¶¬"),
-            "´º" or "ÏÄ" => ("´º", "ÏÄ"),
-            _ => ("Çï", "¶¬")
+            "ç§‹" or "å†¬" => ("ç§‹", "å†¬"),
+            "æ˜¥" or "å¤" => ("æ˜¥", "å¤"),
+            _ => ("ç§‹", "å†¬")
         };
     }
 
@@ -134,7 +134,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
         var client = clientResult.Value;
         if (!_zjuSsoService.IsAuthenticated || string.IsNullOrEmpty(_zjuSsoService.Id))
         {
-            return Result.Fail("Î´»ñÈ¡µ½Ñ§ºÅÐÅÏ¢");
+            return Result.Fail("æœªèŽ·å–åˆ°å­¦å·ä¿¡æ¯");
         }
 
         try
@@ -156,7 +156,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
             if (!response.IsSuccessStatusCode)
             {
                 _state = null;
-                return Result.Fail($"»ñÈ¡¿Î³Ì±íÊ§°Ü: {response.StatusCode}");
+                return Result.Fail($"èŽ·å–è¯¾ç¨‹è¡¨å¤±è´¥: {response.StatusCode}");
             }
 
             var scheduleResponse = await response.Content.ReadFromJsonAsync(
@@ -164,10 +164,10 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
 
             if (scheduleResponse is null)
             {
-                return Result.Fail("½âÎö¿Î³Ì±íÊý¾ÝÊ§°Ü");
+                return Result.Fail("è§£æžè¯¾ç¨‹è¡¨æ•°æ®å¤±è´¥");
             }
 
-            // Ìí¼ÓÈÕÖ¾£ºÏÔÊ¾·µ»ØµÄ¿Î³ÌµÄTerm×Ö¶Î
+            // æ·»åŠ æ—¥å¿—ï¼šæ˜¾ç¤ºè¿”å›žçš„è¯¾ç¨‹çš„Termå­—æ®µ
             _logger.LogInformation("Received {Count} courses for {Semester}, first course Term: {FirstTerm}",
                 scheduleResponse.SectionList.Count,
                 semester,
@@ -178,7 +178,7 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting schedule");
-            return Result.Fail($"»ñÈ¡¿Î³Ì±íÊ§°Ü£º{ex.Message}");
+            return Result.Fail($"èŽ·å–è¯¾ç¨‹è¡¨å¤±è´¥ï¼š{ex.Message}");
         }
     }
 
@@ -206,14 +206,14 @@ public class ZdbkSectionScheduleService : IZdbkSectionScheduleService, IDaemonSe
         }
         catch (Exception ex)
         {
-            return Result.Fail($"SSOÈÏÖ¤Ê§°Ü£º{ex.Message}");
+            return Result.Fail($"SSOè®¤è¯å¤±è´¥ï¼š{ex.Message}");
         }
     }
 
     private static string MapSemesterToCode(string semester) => semester switch
     {
-        "Çï" or "¶¬" => "1",
-        "´º" or "ÏÄ" => "2",
+        "ç§‹" or "å†¬" => "1",
+        "æ˜¥" or "å¤" => "2",
         _ => throw new ArgumentOutOfRangeException(nameof(semester))
     };
 

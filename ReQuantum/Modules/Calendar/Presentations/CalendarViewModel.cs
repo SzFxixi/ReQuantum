@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IconPacks.Avalonia.Material;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Entities;
 using ReQuantum.Infrastructure.Services;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Menu.Abstractions;
 using ReQuantum.Resources.I18n;
 using ReQuantum.Services;
@@ -12,7 +12,7 @@ using System;
 
 namespace ReQuantum.ViewModels;
 
-public record CalendarSelectedDateChanged(DateOnly Date) : INotification;
+public record CalendarSelectedDateChanged(DateOnly Date) : IEvent;
 
 [AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(CalendarViewModel), typeof(IMenuItemProvider)])]
 public partial class CalendarViewModel : ViewModelBase<CalendarView>, IMenuItemProvider

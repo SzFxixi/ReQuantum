@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Models;
 using ReQuantum.Modules.Calendar.Entities;
+using ReQuantum.Modules.Common.Attributes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

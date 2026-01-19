@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
-using ReQuantum.Attributes;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Models;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
+using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.CoursesZju.Models;
 using ReQuantum.Modules.ZjuSso.Services;
 using System;
@@ -61,6 +61,7 @@ public class CoursesZjuService : ICoursesZjuService, IDaemonService
             var response = await result.Content.ReadFromJsonAsync(SourceGenerationContext.Default.CoursesZjuTodosResponse);
             if (response is null)
             {
+
                 return Result.Fail("解析待办事项失败");
             }
 
