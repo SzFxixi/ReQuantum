@@ -1,11 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IconPacks.Avalonia.Material;
+using ReQuantum.Assets.I18n;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Entities;
 using ReQuantum.Infrastructure.Services;
+using ReQuantum.Modules.Calendar.Presentations;
 using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Menu.Abstractions;
-using ReQuantum.Resources.I18n;
 using ReQuantum.Services;
 using ReQuantum.Views;
 using System;
@@ -23,21 +24,21 @@ public partial class CalendarViewModel : ViewModelBase<CalendarView>, IMenuItemP
     #endregion
 
     [ObservableProperty]
-    private Modules.Calendar.Presentations.CalendarPartViewModel _calendarPartViewModel;
+    private CalendarPartViewModel _calendarPartViewModel;
 
     [ObservableProperty]
     private TodoListViewModel _todoListViewModel;
 
     [ObservableProperty]
-    private Modules.Calendar.Presentations.EventListViewModel _eventListViewModel;
+    private EventListViewModel _eventListViewModel;
 
     [ObservableProperty]
     private NoteListViewModel _noteListViewModel;
 
     public CalendarViewModel(
-        Modules.Calendar.Presentations.CalendarPartViewModel calendarPartViewModel,
+        CalendarPartViewModel calendarPartViewModel,
         TodoListViewModel todoListViewModel,
-        Modules.Calendar.Presentations.EventListViewModel eventListViewModel,
+        EventListViewModel eventListViewModel,
         NoteListViewModel noteListViewModel)
     {
         MenuItem = new MenuItem

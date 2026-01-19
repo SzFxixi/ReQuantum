@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReQuantum.Assets.I18n;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Entities;
 using ReQuantum.Modules.Common.Attributes;
-using ReQuantum.Resources.I18n;
 using ReQuantum.ViewModels;
 using ReQuantum.Views;
 using System;

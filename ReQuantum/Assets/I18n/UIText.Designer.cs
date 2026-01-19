@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ReQuantum.Resources.I18n {
+namespace ReQuantum.Assets.I18n {
     using System;
     
     
@@ -19,7 +19,7 @@ namespace ReQuantum.Resources.I18n {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UIText {
@@ -39,7 +39,7 @@ namespace ReQuantum.Resources.I18n {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ReQuantum.Resources.I18n.UIText", typeof(UIText).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ReQuantum.Assets.I18n.UIText", typeof(UIText).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -250,7 +250,7 @@ namespace ReQuantum.Resources.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ❌ End time cannot be earlier than or equal to start time.
+        ///   Looks up a localized string similar to End time cannot be earlier than or equal to start time.
         /// </summary>
         public static string EventEndTimeBeforeStart {
             get {
@@ -259,7 +259,7 @@ namespace ReQuantum.Resources.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚠️ You are creating an event in the past.
+        ///   Looks up a localized string similar to You are creating an event in the past.
         /// </summary>
         public static string EventInPast {
             get {
@@ -583,6 +583,15 @@ namespace ReQuantum.Resources.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sync ZJU.
+        /// </summary>
+        public static string SyncCoursesZju {
+            get {
+                return ResourceManager.GetString("SyncCoursesZju", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Thu.
         /// </summary>
         public static string Thursday {
@@ -610,7 +619,7 @@ namespace ReQuantum.Resources.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ⚠️ You are creating a todo in the past.
+        ///   Looks up a localized string similar to You are creating a todo in the past.
         /// </summary>
         public static string TodoInPast {
             get {

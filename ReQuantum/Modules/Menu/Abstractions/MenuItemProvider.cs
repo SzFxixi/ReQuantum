@@ -1,4 +1,4 @@
-﻿using ReQuantum.Services;
+using ReQuantum.Services;
 
 namespace ReQuantum.Modules.Menu.Abstractions;
 

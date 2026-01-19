@@ -1,6 +1,6 @@
+using ReQuantum.Assets.I18n;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
-using ReQuantum.Resources.I18n;
 using ReQuantum.ViewModels;
 using System;
 using System.Collections.Generic;

@@ -210,8 +210,6 @@
   <data name="NotLoggedIn" xml:space="preserve">
     <value>用户未登录。</value>
   </data>
-  
-  <!-- Calendar Module -->
   <data name="Calendar" xml:space="preserve">
     <value>日历</value>
   </data>
@@ -324,13 +322,13 @@
     <value>Sat</value>
   </data>
   <data name="EventEndTimeBeforeStart" xml:space="preserve">
-    <value>❌ 结束时间不能早于或等于开始时间</value>
+    <value>结束时间不能早于或等于开始时间</value>
   </data>
   <data name="EventInPast" xml:space="preserve">
-    <value>⚠️ 你正在创建过去的日程</value>
+    <value>你正在创建过去的日程</value>
   </data>
   <data name="TodoInPast" xml:space="preserve">
-    <value>⚠️ 你正在创建过去的待办</value>
+    <value>你正在创建过去的待办</value>
   </data>
   <data name="YearMonthFormat" xml:space="preserve">
     <value>{0}年{1}月</value>

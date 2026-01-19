@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReQuantum.Assets.I18n;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Calendar.Entities;
@@ -7,7 +8,6 @@ using ReQuantum.Modules.Calendar.Services;
 using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Zdbk.Services;
 using ReQuantum.Modules.ZjuSso.Services;
-using ReQuantum.Resources.I18n;
 using ReQuantum.ViewModels;
 using ReQuantum.Views;
 using System;

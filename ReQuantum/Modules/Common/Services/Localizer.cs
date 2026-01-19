@@ -1,6 +1,6 @@
+using ReQuantum.Assets.I18n;
 using ReQuantum.Infrastructure.Abstractions;
 using ReQuantum.Modules.Common.Attributes;
-using ReQuantum.Resources.I18n;
 using System;
 using System.ComponentModel;
 using System.Globalization;

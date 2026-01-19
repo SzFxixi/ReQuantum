@@ -19,9 +19,9 @@ public class EventPublisher : IEventPublisher
         _serviceProvider = serviceProvider;
     }
 
-    public void Publish<TNotification>(TNotification args) where TNotification : IEvent
+    public void Publish<TEvent>(TEvent args) where TEvent : IEvent
     {
-        var services = _serviceProvider.GetServices<IEventHandler<TNotification>>();
+        var services = _serviceProvider.GetServices<IEventHandler<TEvent>>();
         foreach (var service in services)
         {
             service.Handle(args);
