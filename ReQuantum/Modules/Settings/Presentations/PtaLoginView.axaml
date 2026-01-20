@@ -20,30 +20,30 @@
                 CornerRadius="8"
                 Padding="20">
           <StackPanel Spacing="16">
-            <TextBlock Text="PTA 账号登录"
+            <TextBlock Text="{Binding Localizer[PtaAccountLogin]}"
                        FontSize="18"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"/>
 
             <!-- Email Input -->
             <StackPanel Spacing="8">
-              <TextBlock Text="邮箱"
+              <TextBlock Text="{Binding Localizer[Email]}"
                          FontSize="14"
                          FontWeight="Medium"/>
               <TextBox Text="{Binding Email}"
-                       Watermark="请输入 PTA 账号邮箱"
+                       Watermark="{Binding Localizer[EnterPtaEmail]}"
                        FontSize="14"
                        Padding="12,8"/>
             </StackPanel>
 
             <!-- Password Input -->
             <StackPanel Spacing="8">
-              <TextBlock Text="密码"
+              <TextBlock Text="{Binding Localizer[Password]}"
                          FontSize="14"
                          FontWeight="Medium"/>
               <TextBox Text="{Binding Password}"
                        PasswordChar="●"
-                       Watermark="请输入密码"
+                       Watermark="{Binding Localizer[EnterPassword]}"
                        FontSize="14"
                        Padding="12,8"/>
             </StackPanel>
@@ -63,11 +63,11 @@
                     IsEnabled="{Binding !IsLoading}">
               <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                 <TextBlock Text="🔐" FontSize="16" IsVisible="{Binding !IsLoading}"/>
-                <TextBlock Text="登录"
+                <TextBlock Text="{Binding Localizer[Login]}"
                            FontSize="14"
                            FontWeight="SemiBold"
                            IsVisible="{Binding !IsLoading}"/>
-                <TextBlock Text="登录中..."
+                <TextBlock Text="{Binding Localizer[LoggingIn]}"
                            FontSize="14"
                            FontWeight="SemiBold"
                            IsVisible="{Binding IsLoading}"/>
@@ -82,7 +82,7 @@
                     Background="Orange">
               <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                 <TextBlock Text="⚠" FontSize="16"/>
-                <TextBlock Text="需要验证码，点击此处使用浏览器登录"
+                <TextBlock Text="{Binding Localizer[NeedCaptchaUseBrowser]}"
                            FontSize="14"
                            FontWeight="SemiBold"/>
               </StackPanel>
@@ -97,7 +97,7 @@
                 Padding="20"
                 IsVisible="{Binding ShowCookieInput}">
           <StackPanel Spacing="16">
-            <TextBlock Text="输入 PTASession Cookie"
+            <TextBlock Text="{Binding Localizer[EnterPtaSessionCookie]}"
                        FontSize="16"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"/>
@@ -111,7 +111,7 @@
                        Padding="12"/>
 
             <TextBox Text="{Binding PtaSessionInput}"
-                     Watermark="粘贴 PTASession 值（UUID 格式）"
+                     Watermark="{Binding Localizer[PastePtaSessionValue]}"
                      FontSize="12"
                      FontFamily="Consolas"
                      Padding="12,8"/>
@@ -119,14 +119,18 @@
             <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
               <Button Command="{Binding SubmitCookieCommand}"
                       Padding="24,10">
-                <TextBlock Text="✓ 提交"
-                           FontSize="14"
-                           FontWeight="SemiBold"/>
+                <TextBlock FontSize="14"
+                           FontWeight="SemiBold">
+                  <Run Text="✓ "/>
+                  <Run Text="{Binding Localizer[Submit]}"/>
+                </TextBlock>
               </Button>
               <Button Command="{Binding CancelCookieInputCommand}"
                       Padding="24,10">
-                <TextBlock Text="✕ 取消"
-                           FontSize="14"/>
+                <TextBlock FontSize="14">
+                  <Run Text="✕ "/>
+                  <Run Text="{Binding Localizer[Cancel]}"/>
+                </TextBlock>
               </Button>
             </StackPanel>
           </StackPanel>
@@ -142,11 +146,13 @@
                 Padding="20"
                 HorizontalAlignment="Center">
           <StackPanel Spacing="12">
-            <TextBlock Text="✓ PTA 已登录"
-                       FontSize="18"
+            <TextBlock FontSize="18"
                        FontWeight="Bold"
                        Foreground="Green"
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center">
+              <Run Text="✓ "/>
+              <Run Text="{Binding Localizer[PtaLoggedIn]}"/>
+            </TextBlock>
 
             <TextBlock Text="{Binding StatusMessage}"
                        FontSize="14"
@@ -160,7 +166,7 @@
         <Button Command="{Binding LogoutCommand}"
                 HorizontalAlignment="Center"
                 Padding="24,12">
-          <TextBlock Text="登出"
+          <TextBlock Text="{Binding Localizer[Logout]}"
                      FontSize="14"
                      FontWeight="SemiBold"/>
         </Button>

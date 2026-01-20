@@ -154,6 +154,15 @@ public partial class EventListViewModel : ViewModelBase<EventListView>, IEventHa
     [ObservableProperty]
     private bool _isSyncingZdbk;
 
+    [ObservableProperty]
+    private bool _isSyncingAll;
+
+    [ObservableProperty]
+    private string _syncErrorMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool _showSyncError;
+
     #endregion
 
     public EventListViewModel(
@@ -435,6 +444,179 @@ public partial class EventListViewModel : ViewModelBase<EventListView>, IEventHa
         {
             IsSyncingPta = false;
         }
+    }
+
+    #endregion
+
+    #region 一键同步
+
+    public bool ShowSyncAllButton => _zjuSsoService.IsAuthenticated || _ptaAuthService.IsAuthenticated;
+
+    [RelayCommand]
+    private async Task SyncAllAsync()
+    {
+        if (IsSyncingAll)
+            return;
+
+        IsSyncingAll = true;
+        ShowSyncError = false;
+        SyncErrorMessage = string.Empty;
+        var errors = new List<string>();
+
+        try
+        {
+            // 1. 同步课程表和考试（如果已登录教务网）
+            if (_zjuSsoService.IsAuthenticated)
+            {
+                try
+                {
+                    IsSyncingZdbk = true;
+
+                    // 同步课程表
+                    var scheduleResult = await _zdbkService.GetCurrentSemesterScheduleAsync();
+                    if (!scheduleResult.IsSuccess)
+                    {
+                        errors.Add($"📅 {Localizer[nameof(UIText.CourseSyncFailed)]}: {scheduleResult.Message}");
+                    }
+                    else
+                    {
+                        var schedule = scheduleResult.Value;
+                        var allNewEvents = new List<CalendarEvent>();
+
+                        if (schedule.RelatedSemesters != null && schedule.RelatedSemesters.Length == 2)
+                        {
+                            var semester1 = schedule.RelatedSemesters[0];
+                            var semester2 = schedule.RelatedSemesters[1];
+
+                            var events1 = await _zdbkConverter.ConvertToCalendarEventsAsync(
+                                schedule.SectionList,
+                                schedule.AcademicYear ?? "",
+                                semester1);
+
+                            var events2 = await _zdbkConverter.ConvertToCalendarEventsAsync(
+                                schedule.SectionList,
+                                schedule.AcademicYear ?? "",
+                                semester2);
+
+                            allNewEvents.AddRange(events1);
+                            allNewEvents.AddRange(events2);
+                        }
+                        else
+                        {
+                            allNewEvents = await _zdbkConverter.ConvertToCalendarEventsAsync(
+                                schedule.SectionList,
+                                schedule.AcademicYear ?? "",
+                                schedule.Semester ?? "");
+                        }
+
+                        foreach (var evt in allNewEvents)
+                            evt.IsFromZdbk = true;
+
+                        var existingZdbkEvents = _calendarService.GetAllEvents().Where(e => e.IsFromZdbk).ToList();
+                        var newEventIds = allNewEvents.Select(e => e.Id).ToHashSet();
+
+                        foreach (var existingEvent in existingZdbkEvents.Where(e => !newEventIds.Contains(e.Id)))
+                            _calendarService.DeleteEvent(existingEvent.Id);
+
+                        foreach (var evt in allNewEvents)
+                            _calendarService.AddOrUpdateEvent(evt);
+                    }
+
+                    // 同步考试
+                    var examsResult = await _examService.GetExamsAsync();
+                    if (!examsResult.IsSuccess)
+                    {
+                        errors.Add($"📝 {Localizer[nameof(UIText.ExamSyncFailed)]}: {examsResult.Message}");
+                    }
+                    else
+                    {
+                        var parsedExams = examsResult.Value;
+                        var calendarEvents = _zdbkConverter.ConvertExamsToCalendarEvents(parsedExams);
+
+                        foreach (var evt in calendarEvents)
+                            evt.IsFromZdbkExam = true;
+
+                        var existingExamEvents = _calendarService.GetAllEvents().Where(e => e.IsFromZdbkExam).ToList();
+                        var newEventIds = calendarEvents.Select(e => e.Id).ToHashSet();
+
+                        foreach (var existingEvent in existingExamEvents.Where(e => !newEventIds.Contains(e.Id)))
+                            _calendarService.DeleteEvent(existingEvent.Id);
+
+                        foreach (var evt in calendarEvents)
+                            _calendarService.AddOrUpdateEvent(evt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"📅 {Localizer[nameof(UIText.ZdbkSyncException)]}: {ex.Message}");
+                }
+                finally
+                {
+                    IsSyncingZdbk = false;
+                }
+            }
+
+            // 2. 同步 PTA 作业（如果已登录 PTA）
+            if (_ptaAuthService.IsAuthenticated)
+            {
+                try
+                {
+                    IsSyncingPta = true;
+
+                    var problemSetsResult = await _ptaService.GetProblemSetsAsync();
+                    if (!problemSetsResult.IsSuccess)
+                    {
+                        errors.Add($"📚 {Localizer[nameof(UIText.PtaSyncFailed)]}: {problemSetsResult.Message}");
+                    }
+                    else
+                    {
+                        var problemSets = problemSetsResult.Value;
+                        var calendarEvents = _ptaConverter.ConvertToCalendarEvents(problemSets);
+
+                        foreach (var evt in calendarEvents)
+                            evt.IsFromPta = true;
+
+                        var existingPtaEvents = _calendarService.GetAllEvents().Where(e => e.IsFromPta).ToList();
+                        var newEventIds = calendarEvents.Select(e => e.Id).ToHashSet();
+
+                        foreach (var existingEvent in existingPtaEvents.Where(e => !newEventIds.Contains(e.Id)))
+                            _calendarService.DeleteEvent(existingEvent.Id);
+
+                        foreach (var evt in calendarEvents)
+                            _calendarService.AddOrUpdateEvent(evt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"📚 {Localizer[nameof(UIText.PtaSyncException)]}: {ex.Message}");
+                }
+                finally
+                {
+                    IsSyncingPta = false;
+                }
+            }
+
+            // 3. 刷新日历显示
+            Publisher.Publish(new CalendarSelectedDateChanged(SelectedDate));
+
+            // 4. 显示错误信息（如果有）
+            if (errors.Count > 0)
+            {
+                SyncErrorMessage = string.Join("\n\n", errors);
+                ShowSyncError = true;
+            }
+        }
+        finally
+        {
+            IsSyncingAll = false;
+        }
+    }
+
+    [RelayCommand]
+    private void CloseSyncError()
+    {
+        ShowSyncError = false;
+        SyncErrorMessage = string.Empty;
     }
 
     #endregion
