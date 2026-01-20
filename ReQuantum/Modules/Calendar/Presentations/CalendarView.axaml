@@ -34,9 +34,12 @@
       <Border Grid.Column="2" Padding="16">
         <ScrollViewer VerticalScrollBarVisibility="Hidden">
           <StackPanel Spacing="24">
-            
+
             <!-- 日程区域（上部） -->
             <views:EventListView DataContext="{Binding EventListViewModel}"/>
+
+            <!-- 考试区域 -->
+            <views:ExamListView DataContext="{Binding ExamListViewModel}"/>
 
             <!-- 待办区域（中部） -->
             <views:TodoListView DataContext="{Binding TodoListViewModel}"/>
@@ -64,9 +67,12 @@
 
         <!-- 内容区域 -->
         <StackPanel Spacing="16">
-          
+
           <!-- 日程区域 -->
           <views:EventListView DataContext="{Binding EventListViewModel}"/>
+
+          <!-- 考试区域 -->
+          <views:ExamListView DataContext="{Binding ExamListViewModel}"/>
 
           <!-- 待办区域 -->
           <views:TodoListView DataContext="{Binding TodoListViewModel}"/>

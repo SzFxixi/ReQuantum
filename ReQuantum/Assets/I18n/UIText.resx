@@ -336,4 +336,10 @@
   <data name="SyncCoursesZju" xml:space="preserve">
     <value>Sync ZJU</value>
   </data>
+  <data name="ExamsOnDate" xml:space="preserve">
+    <value>Exams - {0:MMM dd, yyyy}</value>
+  </data>
+  <data name="NoExams" xml:space="preserve">
+    <value>No exams on this date</value>
+  </data>
 </root>

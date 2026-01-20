@@ -17,6 +17,8 @@ namespace ReQuantum;
 [JsonSerializable(typeof(CoursesZjuState))]
 [JsonSerializable(typeof(ZdbkSectionScheduleResponse))]
 [JsonSerializable(typeof(ZdbkState))]
+[JsonSerializable(typeof(ZdbkExamResponse))]
+[JsonSerializable(typeof(ZdbkExamDto))]
 [JsonSerializable(typeof(AcademicCalendar))]
 [JsonSerializable(typeof(AcademicCalendarResponse))]
 [JsonSerializable(typeof(CourseAdjustment))]

@@ -336,4 +336,10 @@
   <data name="SyncCoursesZju" xml:space="preserve">
     <value>同步学在浙大</value>
   </data>
+  <data name="ExamsOnDate" xml:space="preserve">
+    <value>考试 - {0:M月d日 yyyy}</value>
+  </data>
+  <data name="NoExams" xml:space="preserve">
+    <value>该日期没有考试</value>
+  </data>
 </root>

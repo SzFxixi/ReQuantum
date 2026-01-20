@@ -33,12 +33,16 @@ public partial class CalendarViewModel : ViewModelBase<CalendarView>, IMenuItemP
     private EventListViewModel _eventListViewModel;
 
     [ObservableProperty]
+    private ExamListViewModel _examListViewModel;
+
+    [ObservableProperty]
     private NoteListViewModel _noteListViewModel;
 
     public CalendarViewModel(
         CalendarPartViewModel calendarPartViewModel,
         TodoListViewModel todoListViewModel,
         EventListViewModel eventListViewModel,
+        ExamListViewModel examListViewModel,
         NoteListViewModel noteListViewModel)
     {
         MenuItem = new MenuItem
@@ -50,6 +54,7 @@ public partial class CalendarViewModel : ViewModelBase<CalendarView>, IMenuItemP
         CalendarPartViewModel = calendarPartViewModel;
         TodoListViewModel = todoListViewModel;
         EventListViewModel = eventListViewModel;
+        ExamListViewModel = examListViewModel;
         NoteListViewModel = noteListViewModel;
     }
 }
