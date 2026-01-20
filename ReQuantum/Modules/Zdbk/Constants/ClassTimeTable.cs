@@ -4,36 +4,36 @@ using System.Collections.Generic;
 namespace ReQuantum.Modules.Zdbk.Constants;
 
 /// <summary>
-/// ½Ú´ÎÊ±¼ä±í (»ùÓÚÕã½­´óÑ§±ê×¼×÷Ï¢Ê±¼ä)
+/// ï¿½Ú´ï¿½Ê±ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ã½­ï¿½ï¿½Ñ§ï¿½ï¿½×¼ï¿½ï¿½Ï¢Ê±ï¿½ï¿½)
 /// </summary>
 public static class ClassTimeTable
 {
     /// <summary>
-    /// ½Ú´ÎÊ±¼äÓ³Éä (½Ú´Î -> (¿ªÊ¼Ê±¼ä, ½áÊøÊ±¼ä))
+    /// ï¿½Ú´ï¿½Ê±ï¿½ï¿½Ó³ï¿½ï¿½ (ï¿½Ú´ï¿½ -> (ï¿½ï¿½Ê¼Ê±ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½))
     /// </summary>
     public static readonly Dictionary<int, (TimeOnly Start, TimeOnly End)> SectionTimeMap = new()
     {
-        { 1, (new TimeOnly(8, 0), new TimeOnly(8, 45)) },    // µÚ1½Ú 08:00-08:45
-        { 2, (new TimeOnly(8, 50), new TimeOnly(9, 35)) },   // µÚ2½Ú 08:50-09:35
-        { 3, (new TimeOnly(10, 0), new TimeOnly(10, 45)) },  // µÚ3½Ú 10:00-10:45
-        { 4, (new TimeOnly(10, 50), new TimeOnly(11, 35)) }, // µÚ4½Ú 10:50-11:35
-        { 5, (new TimeOnly(11, 40), new TimeOnly(12, 25)) }, // µÚ5½Ú 11:40-12:25
-        { 6, (new TimeOnly(13, 25), new TimeOnly(14, 10)) }, // µÚ6½Ú 13:25-14:10
-        { 7, (new TimeOnly(14, 15), new TimeOnly(15, 0)) },  // µÚ7½Ú 14:15-15:00
-        { 8, (new TimeOnly(15, 5), new TimeOnly(15, 50)) },  // µÚ8½Ú 15:05-15:50
-        { 9, (new TimeOnly(16, 15), new TimeOnly(17, 00)) }, // µÚ9½Ú 16:10-16:55
-        { 10, (new TimeOnly(17, 5), new TimeOnly(17, 50)) }, // µÚ10½Ú 17:00-17:45
-        { 11, (new TimeOnly(18, 50), new TimeOnly(19, 35)) }, // µÚ11½Ú 18:50-19:35
-        { 12, (new TimeOnly(19, 40), new TimeOnly(20, 25)) },  // µÚ12½Ú 19:40-20:25
-        { 13, (new TimeOnly(20, 30), new TimeOnly(21, 15)) }  // µÚ13½Ú 20:30-21:15
+        { 1, (new TimeOnly(8, 0), new TimeOnly(8, 45)) },    // ï¿½ï¿½1ï¿½ï¿½ 08:00-08:45
+        { 2, (new TimeOnly(8, 50), new TimeOnly(9, 35)) },   // ï¿½ï¿½2ï¿½ï¿½ 08:50-09:35
+        { 3, (new TimeOnly(10, 0), new TimeOnly(10, 45)) },  // ï¿½ï¿½3ï¿½ï¿½ 10:00-10:45
+        { 4, (new TimeOnly(10, 50), new TimeOnly(11, 35)) }, // ï¿½ï¿½4ï¿½ï¿½ 10:50-11:35
+        { 5, (new TimeOnly(11, 40), new TimeOnly(12, 25)) }, // ï¿½ï¿½5ï¿½ï¿½ 11:40-12:25
+        { 6, (new TimeOnly(13, 25), new TimeOnly(14, 10)) }, // ï¿½ï¿½6ï¿½ï¿½ 13:25-14:10
+        { 7, (new TimeOnly(14, 15), new TimeOnly(15, 0)) },  // ï¿½ï¿½7ï¿½ï¿½ 14:15-15:00
+        { 8, (new TimeOnly(15, 5), new TimeOnly(15, 50)) },  // ï¿½ï¿½8ï¿½ï¿½ 15:05-15:50
+        { 9, (new TimeOnly(16, 15), new TimeOnly(17, 00)) }, // ï¿½ï¿½9ï¿½ï¿½ 16:10-16:55
+        { 10, (new TimeOnly(17, 5), new TimeOnly(17, 50)) }, // ï¿½ï¿½10ï¿½ï¿½ 17:00-17:45
+        { 11, (new TimeOnly(18, 50), new TimeOnly(19, 35)) }, // ï¿½ï¿½11ï¿½ï¿½ 18:50-19:35
+        { 12, (new TimeOnly(19, 40), new TimeOnly(20, 25)) },  // ï¿½ï¿½12ï¿½ï¿½ 19:40-20:25
+        { 13, (new TimeOnly(20, 30), new TimeOnly(21, 15)) }  // ï¿½ï¿½13ï¿½ï¿½ 20:30-21:15
     };
 
     /// <summary>
-    /// ¸ù¾ÝÆðÊ¼½Ú´ÎºÍ³ÖÐø³¤¶È¼ÆËãÉÏ¿ÎÊ±¼ä·¶Î§
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Ú´ÎºÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½Ê±ï¿½ä·¶Î§
     /// </summary>
-    /// <param name="startSection">ÆðÊ¼½Ú´Î (1-13)</param>
-    /// <param name="duration">³ÖÐø½ÚÊý (1-5)</param>
-    /// <returns>¿ªÊ¼Ê±¼äºÍ½áÊøÊ±¼ä</returns>
+    /// <param name="startSection">ï¿½ï¿½Ê¼ï¿½Ú´ï¿½ (1-13)</param>
+    /// <param name="duration">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (1-5)</param>
+    /// <returns>ï¿½ï¿½Ê¼Ê±ï¿½ï¿½Í½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½</returns>
     public static (TimeOnly Start, TimeOnly End) GetClassTime(int startSection, int duration)
     {
         if (!SectionTimeMap.TryGetValue(startSection, out var startTime))

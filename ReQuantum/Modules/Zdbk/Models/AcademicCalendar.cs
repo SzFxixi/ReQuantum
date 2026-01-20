@@ -6,54 +6,54 @@ using System.Text.Json.Serialization;
 namespace ReQuantum.Modules.Zdbk.Models;
 
 /// <summary>
-/// Ð£ÀúÐÅÏ¢
+/// Ð£ï¿½ï¿½ï¿½ï¿½Ï¢
 /// </summary>
 public class AcademicCalendar
 {
     /// <summary>
-    /// µ±Ç°Ñ§ÆÚÃû³Æ£¨Èç "2024-2025-1" ±íÊ¾ 2024-2025 Ñ§ÄêµÚÒ»Ñ§ÆÚ£©
+    /// ï¿½ï¿½Ç°Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ "2024-2025-1" ï¿½ï¿½Ê¾ 2024-2025 Ñ§ï¿½ï¿½ï¿½Ò»Ñ§ï¿½Ú£ï¿½
     /// </summary>
     [JsonPropertyName("semester_name")]
     public required string SemesterName { get; set; }
 
     /// <summary>
-    /// Ñ§ÆÚ¿ªÊ¼ÈÕÆÚ
+    /// Ñ§ï¿½Ú¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [JsonPropertyName("start_date")]
     public required DateOnly StartDate { get; set; }
 
     /// <summary>
-    /// Ñ§ÆÚ½áÊøÈÕÆÚ
+    /// Ñ§ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [JsonPropertyName("end_date")]
     public required DateOnly EndDate { get; set; }
 
     /// <summary>
-    /// µ÷¿ÎÊ±¼äÁÐ±í
+    /// ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ð±ï¿½
     /// </summary>
     [JsonPropertyName("course_adjustments")]
     public List<CourseAdjustment> CourseAdjustments { get; set; } = [];
 
     /// <summary>
-    /// Í£¿ÎÈÕÆÚÁÐ±í
+    /// Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
     /// </summary>
     [JsonPropertyName("class_suspension_dates")]
     public List<DateOnly> ClassSuspensionDates { get; set; } = [];
 
     /// <summary>
-    /// Ð£Àú°æ±¾ºÅ
+    /// Ð£ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
     /// </summary>
     [JsonPropertyName("version")]
     public required string Version { get; set; }
 
     /// <summary>
-    /// ÊÇ·ñÎª¶ÌÑ§ÆÚ£¨ÏÄ¼¾Ð¡Ñ§ÆÚ£©
+    /// ï¿½Ç·ï¿½Îªï¿½ï¿½Ñ§ï¿½Ú£ï¿½ï¿½Ä¼ï¿½Ð¡Ñ§ï¿½Ú£ï¿½
     /// </summary>
     [JsonPropertyName("is_short_semester")]
     public bool IsShortSemester { get; set; }
 
     /// <summary>
-    /// Ñ§Äê£¨Èç "2024-2025"£©
+    /// Ñ§ï¿½ê£¨ï¿½ï¿½ "2024-2025"ï¿½ï¿½
     /// </summary>
     [JsonIgnore]
     public string AcademicYear
@@ -66,7 +66,7 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// Ñ§ÆÚ´úÂë£¨1 »ò 2£©
+    /// Ñ§ï¿½Ú´ï¿½ï¿½ë£¨1 ï¿½ï¿½ 2ï¿½ï¿½
     /// </summary>
     [JsonIgnore]
     public string SemesterCode
@@ -79,10 +79,10 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÈÕÆÚ¶ÔÓ¦µÄÖÜ´Î£¨´Ó1¿ªÊ¼£©
+    /// ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½Ó¦ï¿½ï¿½ï¿½Ü´Î£ï¿½ï¿½ï¿½1ï¿½ï¿½Ê¼ï¿½ï¿½
     /// </summary>
-    /// <param name="date">Ö¸¶¨ÈÕÆÚ</param>
-    /// <returns>ÖÜ´Î£¬Èç¹û²»ÔÚÑ§ÆÚÄÚ·µ»Ø null</returns>
+    /// <param name="date">Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+    /// <returns>ï¿½Ü´Î£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ null</returns>
     public int? GetWeekNumber(DateOnly date)
     {
         if (date < StartDate || date > EndDate)
@@ -90,7 +90,7 @@ public class AcademicCalendar
             return null;
         }
 
-        // ¼ÆËãÔ­Ê¼ÖÜ´Î
+        // ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½Ü´ï¿½
         var daysDiff = date.DayNumber - StartDate.DayNumber;
         var weekNumber = (daysDiff / 7) + 1;
 
@@ -98,117 +98,117 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÖÜ´Î¶ÔÓ¦µÄÑ§ÆÚÃû³Æ£¨Çï/¶¬/´º/ÏÄ£©
+    /// ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ü´Î¶ï¿½Ó¦ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½/ï¿½ï¿½/ï¿½ï¿½/ï¿½Ä£ï¿½
     /// </summary>
-    /// <param name="weekNumber">ÖÜ´Î</param>
-    /// <returns>Ñ§ÆÚÃû³Æ</returns>
+    /// <param name="weekNumber">ï¿½Ü´ï¿½</param>
+    /// <returns>Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns>
     public string GetSemesterNameForWeek(int weekNumber)
     {
         if (IsShortSemester)
         {
-            return "ÏÄ"; // ¶ÌÑ§ÆÚÍ³Ò»ÎªÏÄ
+            return "ï¿½ï¿½"; // ï¿½ï¿½Ñ§ï¿½ï¿½Í³Ò»Îªï¿½ï¿½
         }
 
-        // ·Ç¶ÌÑ§ÆÚ£º1-8ÖÜÎªÇï/´º£¬9-16ÖÜÎª¶¬/ÏÄ
-        if (SemesterCode == "1") // µÚÒ»Ñ§ÆÚ
+        // ï¿½Ç¶ï¿½Ñ§ï¿½Ú£ï¿½1-8ï¿½ï¿½Îªï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½9-16ï¿½ï¿½Îªï¿½ï¿½/ï¿½ï¿½
+        if (SemesterCode == "1") // ï¿½ï¿½Ò»Ñ§ï¿½ï¿½
         {
-            return weekNumber <= 8 ? "Çï" : "¶¬";
+            return weekNumber <= 8 ? "ï¿½ï¿½" : "ï¿½ï¿½";
         }
-        else // µÚ¶þÑ§ÆÚ
+        else // ï¿½Ú¶ï¿½Ñ§ï¿½ï¿½
         {
-            return weekNumber <= 8 ? "´º" : "ÏÄ";
+            return weekNumber <= 8 ? "ï¿½ï¿½" : "ï¿½ï¿½";
         }
     }
 
     /// <summary>
-    /// ¼ì²éÖ¸¶¨ÈÕÆÚÊÇ·ñ±»µ÷¿Î
+    /// ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ñ±»µï¿½ï¿½ï¿½
     /// </summary>
-    /// <param name="date">Ö¸¶¨ÈÕÆÚ</param>
-    /// <returns>µ÷¿ÎÐÅÏ¢£¬Èç¹ûÃ»ÓÐµ÷¿Î·µ»Ø null</returns>
+    /// <param name="date">Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+    /// <returns>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ðµï¿½ï¿½Î·ï¿½ï¿½ï¿½ null</returns>
     public CourseAdjustment? GetAdjustment(DateOnly date)
     {
         return CourseAdjustments.FirstOrDefault(a => a.OriginalDate == date);
     }
 
     /// <summary>
-    /// ¼ì²éÖ¸¶¨ÈÕÆÚÊÇ·ñÍ£¿Î
+    /// ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Í£ï¿½ï¿½
     /// </summary>
-    /// <param name="date">Ö¸¶¨ÈÕÆÚ</param>
-    /// <returns>ÊÇ·ñÍ£¿Î</returns>
+    /// <param name="date">Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+    /// <returns>ï¿½Ç·ï¿½Í£ï¿½ï¿½</returns>
     public bool IsSuspended(DateOnly date)
     {
         return ClassSuspensionDates.Contains(date);
     }
 
     /// <summary>
-    /// »ñÈ¡µ÷ÕûºóµÄÊµ¼ÊÉÏ¿ÎÈÕÆÚ
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    /// <param name="date">Ô­Ê¼ÈÕÆÚ</param>
-    /// <returns>Êµ¼ÊÉÏ¿ÎÈÕÆÚ</returns>
+    /// <param name="date">Ô­Ê¼ï¿½ï¿½ï¿½ï¿½</param>
+    /// <returns>Êµï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½</returns>
     public DateOnly GetActualCourseDate(DateOnly date)
     {
-        // ¼ì²éÊÇ·ñÓÐÆäËûÈÕÆÚµ÷Õûµ½ÕâÒ»Ìì
+        // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
         var adjustmentToThisDate = CourseAdjustments.FirstOrDefault(a => a.TargetDate == date);
         if (adjustmentToThisDate != null)
         {
             return adjustmentToThisDate.OriginalDate;
         }
 
-        // ¼ì²éÕâÒ»ÌìÊÇ·ñ±»µ÷Õûµ½ÆäËûÈÕÆÚ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ç·ñ±»µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         var adjustmentFromThisDate = CourseAdjustments.FirstOrDefault(a => a.OriginalDate == date);
         if (adjustmentFromThisDate != null)
         {
             return adjustmentFromThisDate.TargetDate;
         }
 
-        // Ã»ÓÐµ÷Õû
+        // Ã»ï¿½Ðµï¿½ï¿½ï¿½
         return date;
     }
 }
 
 /// <summary>
-/// µ÷¿ÎÐÅÏ¢
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 /// </summary>
 public class CourseAdjustment
 {
     /// <summary>
-    /// Ô­Ê¼ÈÕÆÚ£¨±»µ÷ÕûµÄÈÕÆÚ£©
+    /// Ô­Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½
     /// </summary>
     [JsonPropertyName("original_date")]
     public required DateOnly OriginalDate { get; set; }
 
     /// <summary>
-    /// Ä¿±êÈÕÆÚ£¨µ÷Õûµ½µÄÈÕÆÚ£©
+    /// Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½
     /// </summary>
     [JsonPropertyName("target_date")]
     public required DateOnly TargetDate { get; set; }
 
     /// <summary>
-    /// µ÷¿ÎÔ­Òò£¨¿ÉÑ¡£©
+    /// ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ò£¨¿ï¿½Ñ¡ï¿½ï¿½
     /// </summary>
     [JsonPropertyName("reason")]
     public string? Reason { get; set; }
 }
 
 /// <summary>
-/// Ð£ÀúÏìÓ¦
+/// Ð£ï¿½ï¿½ï¿½ï¿½Ó¦
 /// </summary>
 public class AcademicCalendarResponse
 {
     /// <summary>
-    /// ³É¹¦±êÖ¾
+    /// ï¿½É¹ï¿½ï¿½ï¿½Ö¾
     /// </summary>
     [JsonPropertyName("success")]
     public bool Success { get; set; }
 
     /// <summary>
-    /// ´íÎóÏûÏ¢£¨Èç¹ûÓÐ£©
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½
     /// </summary>
     [JsonPropertyName("message")]
     public string? Message { get; set; }
 
     /// <summary>
-    /// Ð£ÀúÊý¾Ý
+    /// Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [JsonPropertyName("data")]
     public AcademicCalendar? Data { get; set; }

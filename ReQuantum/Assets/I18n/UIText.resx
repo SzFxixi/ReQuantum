@@ -336,4 +336,7 @@
   <data name="SyncCoursesZju" xml:space="preserve">
     <value>Sync ZJU</value>
   </data>
+  <data name="NotesWall" xml:space="preserve">
+    <value>Notes Wall</value>
+  </data>
 </root>

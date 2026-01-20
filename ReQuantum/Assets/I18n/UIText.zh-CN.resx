@@ -336,4 +336,7 @@
   <data name="SyncCoursesZju" xml:space="preserve">
     <value>同步学在浙大</value>
   </data>
+  <data name="NotesWall" xml:space="preserve">
+    <value>便签墙</value>
+  </data>
 </root>

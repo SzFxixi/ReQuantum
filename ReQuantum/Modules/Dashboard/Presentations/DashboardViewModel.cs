@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
 using ReQuantum.Assets.I18n;
@@ -27,6 +28,10 @@ public partial class DashboardViewModel : ViewModelBase<DashboardView>, IMenuIte
     private readonly ILocalizer _localizer;
 
     public string Welcome => _localizer[UIText.HelloWorld];
+    public string aSentence => "This is an attempt";
+
+    [ObservableProperty]
+    private bool _isClick;
 
     public DashboardViewModel(ILocalizer localizer)
     {
@@ -43,5 +48,11 @@ public partial class DashboardViewModel : ViewModelBase<DashboardView>, IMenuIte
     private void UpdateWelcome()
     {
         _localizer.SetCulture("zh-CN");
+    }
+
+    [RelayCommand]
+    private void Click()
+    {
+        IsClick = !IsClick;
     }
 }

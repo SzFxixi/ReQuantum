@@ -17,7 +17,6 @@ public partial class CalendarTodo : ObservableObject
 
     public DateTime CreatedAt { get; set; }
     public string From { get; set; } = string.Empty;
-
     public CalendarTodo()
     {
         Id = Guid.NewGuid();
