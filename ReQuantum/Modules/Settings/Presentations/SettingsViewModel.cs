@@ -27,7 +27,11 @@ public partial class SettingsViewModel : ViewModelBase<SettingsView>, IMenuItemP
     private ZjuSsoLoginViewModel _zjuSsoLoginViewModel;
 
     [ObservableProperty]
+    private PintiaLoginViewModel _pintiaLoginViewModel;
+
+    [ObservableProperty]
     private LanguageOption _selectedLanguage;
+
 
     public List<LanguageOption> AvailableLanguages { get; } =
     [
@@ -35,7 +39,7 @@ public partial class SettingsViewModel : ViewModelBase<SettingsView>, IMenuItemP
         new("中文", "zh-CN")
     ];
 
-    public SettingsViewModel(ZjuSsoLoginViewModel zjuSsoLoginViewModel)
+    public SettingsViewModel(ZjuSsoLoginViewModel zjuSsoLoginViewModel, PintiaLoginViewModel pintiaLoginViewModel)
     {
         MenuItem = new MenuItem()
         {
@@ -44,6 +48,7 @@ public partial class SettingsViewModel : ViewModelBase<SettingsView>, IMenuItemP
             OnSelected = () => Navigator.NavigateTo<SettingsViewModel>()
         };
         ZjuSsoLoginViewModel = zjuSsoLoginViewModel;
+        PintiaLoginViewModel = pintiaLoginViewModel;
 
         // Set current language
         var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;

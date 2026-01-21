@@ -66,6 +66,20 @@
         </StackPanel>
       </Border>
 
+      <Border BorderThickness="1"
+              BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+              CornerRadius="8"
+              Padding="20">
+          <StackPanel Spacing="16">
+              <TextBlock Text="{Binding Localizer[PintiaLogin]}"
+                         FontSize="20"
+                         FontWeight="SemiBold"/>
+          
+              <!-- Embedded PintiaLoginView -->
+              <views:PintiaLoginView DataContext="{Binding PintiaLoginViewModel}"/>
+          </StackPanel>
+      </Border>
+
     </StackPanel>
   </ScrollViewer>
 </UserControl>

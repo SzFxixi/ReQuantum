@@ -151,6 +151,15 @@ namespace ReQuantum.Assets.I18n {
         }
         
         /// <summary>
+        ///   查找类似 Course Selection 的本地化字符串。
+        /// </summary>
+        public static string CourseSelection {
+            get {
+                return ResourceManager.GetString("CourseSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Delete 的本地化字符串。
         /// </summary>
         public static string Delete {
@@ -493,18 +502,6 @@ namespace ReQuantum.Assets.I18n {
         }
         
         /// <summary>
-<<<<<<< HEAD
-        ///   查找类似 Notes Wall 的本地化字符串。
-        /// </summary>
-        public static string NotesWall {
-            get {
-                return ResourceManager.GetString("NotesWall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-=======
->>>>>>> 786f8129a4ae58080b5a09cee52d9cb6e27f363b
         ///   查找类似 User is not logged in. 的本地化字符串。
         /// </summary>
         public static string NotLoggedIn {
@@ -532,6 +529,15 @@ namespace ReQuantum.Assets.I18n {
         }
         
         /// <summary>
+        ///   查找类似 Pintia Login 的本地化字符串。
+        /// </summary>
+        public static string PintiaLogin {
+            get {
+                return ResourceManager.GetString("PintiaLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Please enter password 的本地化字符串。
         /// </summary>
         public static string PleaseEnterPassword {
@@ -550,9 +556,7 @@ namespace ReQuantum.Assets.I18n {
         }
         
         /// <summary>
-<<<<<<< HEAD
-=======
-        ///   查找类似  Repeat Times 的本地化字符串。
+        ///   查找类似  Repeat Times： 的本地化字符串。
         /// </summary>
         public static string RepeatTimes {
             get {
@@ -570,7 +574,6 @@ namespace ReQuantum.Assets.I18n {
         }
         
         /// <summary>
->>>>>>> 786f8129a4ae58080b5a09cee52d9cb6e27f363b
         ///   查找类似 Sat 的本地化字符串。
         /// </summary>
         public static string Saturday {
@@ -612,6 +615,15 @@ namespace ReQuantum.Assets.I18n {
         public static string Sunday {
             get {
                 return ResourceManager.GetString("Sunday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Sync courses table 的本地化字符串。
+        /// </summary>
+        public static string SyncCoursesTable {
+            get {
+                return ResourceManager.GetString("SyncCoursesTable", resourceCulture);
             }
         }
         

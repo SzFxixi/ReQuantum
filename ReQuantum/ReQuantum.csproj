@@ -58,8 +58,8 @@
     <Compile Update="Modules\Dashboard\Presentations\DashboardView.axaml.cs">
       <DependentUpon>DashboardView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Modules\MyNotes\Presentations\MyNotesView.axaml.cs">
-      <DependentUpon>MyNotesView.axaml</DependentUpon>
+    <Compile Update="Modules\MyNotes\Presentations\CourseSelectionView.axaml.cs">
+      <DependentUpon>CourseSelectionView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

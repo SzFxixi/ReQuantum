@@ -2,9 +2,9 @@
 
 namespace ReQuantum.Views;
 
-public partial class MyNotesView : UserControl
+public partial class CourseSelectionView : UserControl
 {
-    public MyNotesView()
+    public CourseSelectionView()
     {
         InitializeComponent();
     }

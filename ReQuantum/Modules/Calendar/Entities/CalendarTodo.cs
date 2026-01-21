@@ -17,13 +17,13 @@ public partial class CalendarTodo : ObservableObject
     private bool _isCompleted;
 
     public DateTime CreatedAt { get; set; }
-<<<<<<< HEAD
-    public string From { get; set; } = string.Empty;
-=======
 
-    public Dictionary<string, object?> Properties { get; init; }
+    public Dictionary<string, object?> Properties
+    {
+        get => field ??= new Dictionary<string, object?>();
+        init;
+    }
 
->>>>>>> 786f8129a4ae58080b5a09cee52d9cb6e27f363b
     public CalendarTodo()
     {
         Id = Guid.NewGuid();

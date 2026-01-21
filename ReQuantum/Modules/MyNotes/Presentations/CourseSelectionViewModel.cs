@@ -12,8 +12,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ReQuantum.ViewModels;
 
-[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(MyNotesViewModel), typeof(IMenuItemProvider)])]
-public partial class MyNotesViewModel : ViewModelBase<MyNotesView>, IMenuItemProvider
+[AutoInject(Lifetime.Singleton, RegisterTypes = [typeof(CourseSelectionViewModel), typeof(IMenuItemProvider)])]
+public partial class CourseSelectionViewModel : ViewModelBase<CourseSelectionView>, IMenuItemProvider
 {
 
     #region MenuItemProvider APIs
@@ -21,26 +21,21 @@ public partial class MyNotesViewModel : ViewModelBase<MyNotesView>, IMenuItemPro
     public uint Order => 0;
 
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    public Type ViewModelType => typeof(MyNotesViewModel);
+    public Type ViewModelType => typeof(CourseSelectionViewModel);
     #endregion
 
 
     private readonly ILocalizer _localizer;
 
 
-    public MyNotesViewModel(ILocalizer localizer)
+    public CourseSelectionViewModel(ILocalizer localizer)
     {
         MenuItem = new MenuItem
         {
-            Title = new LocalizedText { Key = nameof(UIText.NotesWall) },
+            Title = new LocalizedText { Key = nameof(UIText.CourseSelection) },
             IconKind = PackIconMaterialKind.BookOpenPageVariant,
-            OnSelected = () => Navigator.NavigateTo<MyNotesViewModel>()
+            OnSelected = () => Navigator.NavigateTo<CourseSelectionViewModel>()
         };
         _localizer = localizer;
-    }
-
-    public void AddInputAt(double x, double y)
-    {
-
     }
 }

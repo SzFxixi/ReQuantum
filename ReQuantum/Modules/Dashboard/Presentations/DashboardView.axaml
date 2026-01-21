@@ -24,11 +24,6 @@
                     FontSize="14"/>
       </Button>
 
-
-      <TextBlock Text="{Binding aSentence}"
-                 FontSize="96"
-                 Background="BlueViolet"
-                 Foreground="Yellow"/>
       <Button Command="{Binding ClickCommand}">
           <TextBlock Text="Don't hit me.Please">
 

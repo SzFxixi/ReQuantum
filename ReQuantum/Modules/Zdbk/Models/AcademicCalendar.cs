@@ -6,54 +6,54 @@ using System.Text.Json.Serialization;
 namespace ReQuantum.Modules.Zdbk.Models;
 
 /// <summary>
-/// У����Ϣ
+/// 校历信息
 /// </summary>
 public class AcademicCalendar
 {
     /// <summary>
-    /// ��ǰѧ�����ƣ��� "2024-2025-1" ��ʾ 2024-2025 ѧ���һѧ�ڣ�
+    /// 当前学期名称（如 "2024-2025-1" 表示 2024-2025 学年第一学期）
     /// </summary>
     [JsonPropertyName("semester_name")]
     public required string SemesterName { get; set; }
 
     /// <summary>
-    /// ѧ�ڿ�ʼ����
+    /// 学期开始日期
     /// </summary>
     [JsonPropertyName("start_date")]
     public required DateOnly StartDate { get; set; }
 
     /// <summary>
-    /// ѧ�ڽ�������
+    /// 学期结束日期
     /// </summary>
     [JsonPropertyName("end_date")]
     public required DateOnly EndDate { get; set; }
 
     /// <summary>
-    /// ����ʱ���б�
+    /// 调课时间列表
     /// </summary>
     [JsonPropertyName("course_adjustments")]
     public List<CourseAdjustment> CourseAdjustments { get; set; } = [];
 
     /// <summary>
-    /// ͣ�������б�
+    /// 停课日期列表
     /// </summary>
     [JsonPropertyName("class_suspension_dates")]
     public List<DateOnly> ClassSuspensionDates { get; set; } = [];
 
     /// <summary>
-    /// У���汾��
+    /// 校历版本号
     /// </summary>
     [JsonPropertyName("version")]
     public required string Version { get; set; }
 
     /// <summary>
-    /// �Ƿ�Ϊ��ѧ�ڣ��ļ�Сѧ�ڣ�
+    /// 是否为短学期（夏季小学期）
     /// </summary>
     [JsonPropertyName("is_short_semester")]
     public bool IsShortSemester { get; set; }
 
     /// <summary>
-    /// ѧ�꣨�� "2024-2025"��
+    /// 学年（如 "2024-2025"）
     /// </summary>
     [JsonIgnore]
     public string AcademicYear
@@ -66,7 +66,7 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// ѧ�ڴ��루1 �� 2��
+    /// 学期代码（1 或 2）
     /// </summary>
     [JsonIgnore]
     public string SemesterCode
@@ -79,10 +79,10 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// ��ȡָ�����ڶ�Ӧ���ܴΣ���1��ʼ��
+    /// 获取指定日期对应的周次（从1开始）
     /// </summary>
-    /// <param name="date">ָ������</param>
-    /// <returns>�ܴΣ��������ѧ���ڷ��� null</returns>
+    /// <param name="date">指定日期</param>
+    /// <returns>周次，如果不在学期内返回 null</returns>
     public int? GetWeekNumber(DateOnly date)
     {
         if (date < StartDate || date > EndDate)
@@ -90,7 +90,7 @@ public class AcademicCalendar
             return null;
         }
 
-        // ����ԭʼ�ܴ�
+        // 计算原始周次
         var daysDiff = date.DayNumber - StartDate.DayNumber;
         var weekNumber = (daysDiff / 7) + 1;
 
@@ -98,117 +98,117 @@ public class AcademicCalendar
     }
 
     /// <summary>
-    /// ��ȡָ���ܴζ�Ӧ��ѧ�����ƣ���/��/��/�ģ�
+    /// 获取指定周次对应的学期名称（秋/冬/春/夏）
     /// </summary>
-    /// <param name="weekNumber">�ܴ�</param>
-    /// <returns>ѧ������</returns>
+    /// <param name="weekNumber">周次</param>
+    /// <returns>学期名称</returns>
     public string GetSemesterNameForWeek(int weekNumber)
     {
         if (IsShortSemester)
         {
-            return "��"; // ��ѧ��ͳһΪ��
+            return "夏"; // 短学期统一为夏
         }
 
-        // �Ƕ�ѧ�ڣ�1-8��Ϊ��/����9-16��Ϊ��/��
-        if (SemesterCode == "1") // ��һѧ��
+        // 非短学期：1-8周为秋/春，9-16周为冬/夏
+        if (SemesterCode == "1") // 第一学期
         {
-            return weekNumber <= 8 ? "��" : "��";
+            return weekNumber <= 8 ? "秋" : "冬";
         }
-        else // �ڶ�ѧ��
+        else // 第二学期
         {
-            return weekNumber <= 8 ? "��" : "��";
+            return weekNumber <= 8 ? "春" : "夏";
         }
     }
 
     /// <summary>
-    /// ���ָ�������Ƿ񱻵���
+    /// 检查指定日期是否被调课
     /// </summary>
-    /// <param name="date">ָ������</param>
-    /// <returns>������Ϣ�����û�е��η��� null</returns>
+    /// <param name="date">指定日期</param>
+    /// <returns>调课信息，如果没有调课返回 null</returns>
     public CourseAdjustment? GetAdjustment(DateOnly date)
     {
         return CourseAdjustments.FirstOrDefault(a => a.OriginalDate == date);
     }
 
     /// <summary>
-    /// ���ָ�������Ƿ�ͣ��
+    /// 检查指定日期是否停课
     /// </summary>
-    /// <param name="date">ָ������</param>
-    /// <returns>�Ƿ�ͣ��</returns>
+    /// <param name="date">指定日期</param>
+    /// <returns>是否停课</returns>
     public bool IsSuspended(DateOnly date)
     {
         return ClassSuspensionDates.Contains(date);
     }
 
     /// <summary>
-    /// ��ȡ�������ʵ���Ͽ�����
+    /// 获取调整后的实际上课日期
     /// </summary>
-    /// <param name="date">ԭʼ����</param>
-    /// <returns>ʵ���Ͽ�����</returns>
+    /// <param name="date">原始日期</param>
+    /// <returns>实际上课日期</returns>
     public DateOnly GetActualCourseDate(DateOnly date)
     {
-        // ����Ƿ����������ڵ�������һ��
+        // 检查是否有其他日期调整到这一天
         var adjustmentToThisDate = CourseAdjustments.FirstOrDefault(a => a.TargetDate == date);
         if (adjustmentToThisDate != null)
         {
             return adjustmentToThisDate.OriginalDate;
         }
 
-        // �����һ���Ƿ񱻵�������������
+        // 检查这一天是否被调整到其他日期
         var adjustmentFromThisDate = CourseAdjustments.FirstOrDefault(a => a.OriginalDate == date);
         if (adjustmentFromThisDate != null)
         {
             return adjustmentFromThisDate.TargetDate;
         }
 
-        // û�е���
+        // 没有调整
         return date;
     }
 }
 
 /// <summary>
-/// ������Ϣ
+/// 调课信息
 /// </summary>
 public class CourseAdjustment
 {
     /// <summary>
-    /// ԭʼ���ڣ������������ڣ�
+    /// 原始日期（被调整的日期）
     /// </summary>
     [JsonPropertyName("original_date")]
     public required DateOnly OriginalDate { get; set; }
 
     /// <summary>
-    /// Ŀ�����ڣ������������ڣ�
+    /// 目标日期（调整到的日期）
     /// </summary>
     [JsonPropertyName("target_date")]
     public required DateOnly TargetDate { get; set; }
 
     /// <summary>
-    /// ����ԭ�򣨿�ѡ��
+    /// 调课原因（可选）
     /// </summary>
     [JsonPropertyName("reason")]
     public string? Reason { get; set; }
 }
 
 /// <summary>
-/// У����Ӧ
+/// 校历响应
 /// </summary>
 public class AcademicCalendarResponse
 {
     /// <summary>
-    /// �ɹ���־
+    /// 成功标志
     /// </summary>
     [JsonPropertyName("success")]
     public bool Success { get; set; }
 
     /// <summary>
-    /// ������Ϣ������У�
+    /// 错误消息（如果有）
     /// </summary>
     [JsonPropertyName("message")]
     public string? Message { get; set; }
 
     /// <summary>
-    /// У������
+    /// 校历数据
     /// </summary>
     [JsonPropertyName("data")]
     public AcademicCalendar? Data { get; set; }

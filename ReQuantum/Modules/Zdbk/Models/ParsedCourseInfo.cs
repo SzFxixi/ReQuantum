@@ -3,52 +3,52 @@ using System;
 namespace ReQuantum.Modules.Zdbk.Models;
 
 /// <summary>
-/// ������Ŀγ���Ϣ (�� kcb �ֶν�������)
+/// 解析后的课程信息 (从 kcb 字段解析而来)
 /// </summary>
 public class ParsedCourseInfo
 {
     /// <summary>
-    /// �γ�����
+    /// 课程名称
     /// </summary>
     public string CourseName { get; set; } = string.Empty;
 
     /// <summary>
-    /// ��ʦ����
+    /// 教师姓名
     /// </summary>
     public string Teacher { get; set; } = string.Empty;
 
     /// <summary>
-    /// ���ҵص�
+    /// 教室地点
     /// </summary>
     public string Location { get; set; } = string.Empty;
 
     /// <summary>
-    /// �ܴ���ʼ
+    /// 周次起始
     /// </summary>
     public int WeekStart { get; set; }
 
     /// <summary>
-    /// �ܴν���
+    /// 周次结束
     /// </summary>
     public int WeekEnd { get; set; }
 
     /// <summary>
-    /// ��������
+    /// 考试日期
     /// </summary>
     public DateTime? ExamDate { get; set; }
 
     /// <summary>
-    /// ���Կ�ʼʱ��
+    /// 考试开始时间
     /// </summary>
     public TimeOnly? ExamStartTime { get; set; }
 
     /// <summary>
-    /// ���Խ���ʱ��
+    /// 考试结束时间
     /// </summary>
     public TimeOnly? ExamEndTime { get; set; }
 
     /// <summary>
-    /// ԭʼ�� kcb �ֶ�����
+    /// 原始的 kcb 字段内容
     /// </summary>
     public string RawInfo { get; set; } = string.Empty;
 }
