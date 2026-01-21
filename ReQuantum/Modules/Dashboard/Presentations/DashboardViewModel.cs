@@ -1,3 +1,5 @@
+using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
 using ReQuantum.Assets.I18n;
@@ -6,6 +8,7 @@ using ReQuantum.Infrastructure.Entities;
 using ReQuantum.Infrastructure.Services;
 using ReQuantum.Modules.Common.Attributes;
 using ReQuantum.Modules.Menu.Abstractions;
+using ReQuantum.Modules.PTA.Service;
 using ReQuantum.Services;
 using ReQuantum.Views;
 using System;
@@ -25,6 +28,7 @@ public partial class DashboardViewModel : ViewModelBase<DashboardView>, IMenuIte
     #endregion
 
     private readonly ILocalizer _localizer;
+    private readonly IQRcodeGettingService _qRcodeGettingService;
 
     public string Welcome => _localizer[UIText.HelloWorld];
 
@@ -37,11 +41,16 @@ public partial class DashboardViewModel : ViewModelBase<DashboardView>, IMenuIte
             OnSelected = () => Navigator.NavigateTo<DashboardViewModel>()
         };
         _localizer = localizer;
+       
     }
+
 
     [RelayCommand]
     private void UpdateWelcome()
     {
         _localizer.SetCulture("zh-CN");
     }
+
+    [ObservableProperty]
+    private Bitmap? _qrCodeSource;
 }
